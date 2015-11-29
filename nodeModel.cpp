@@ -1,4 +1,4 @@
-#include "NodeModel.h"
+#include "nodeModel.h"
 #include <stdio.h> //needed for printf command
 
 #ifdef __APPLE__
