@@ -20,11 +20,11 @@ public:
 	void draw();
 
 	// Variables for Intersect
-	vec3D near,far,distance;
+	//vec3D near,far,distance;
 	double matModelView[16], matProjection[16]; 
 	int viewport[4]; 
-	double* start;
-	double* finish;
+	//double* start;
+	//double* finish;
 
 private:
 	Node *currentNode;
