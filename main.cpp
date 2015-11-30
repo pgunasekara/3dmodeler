@@ -23,13 +23,21 @@
 #include "nodeGroup.h"
 #include "nodeModel.h"
 #include "nodeTransform.h"
+#include <vector>
 
 float pos[] = {0,1,0};
 float camPos[] = {2.5, 2.5, 5};
 float angle = 0.0f;
 
+vector<NodeTransform*> transforms;
+vector<NodeModel*> models;
+
+int currentChild = 0;
+
 //node ids
 int masterID = 0;
+
+Vector3D ip;
 
 int getID(){
 	return masterID++;
@@ -49,29 +57,29 @@ void mouse(int button, int state, int x, int y){
 //function which will populate a sample graph 
 void initGraph(){
 	//temporary place which holds out values
-	Vector3D tempVec3;
+	//Vector3D tempVec3;
 
 
 	//TRANSFORMATION
 	//a tranlation transformation node
 	//how much translation
-	tempVec3.x = 1;
-	tempVec3.y = 1;
-	tempVec3.z = 1;
+	//tempVec3.x = 1;
+	//tempVec3.y = 1;
+	//tempVec3.z = 1;
 	//add the node as a child of root node
-	NodeTransform *T1 = new NodeTransform(Translate, tempVec3);
+	//NodeTransform *T1 = new NodeTransform(Translate, tempVec3);
 	//insert the node into the graph
-	SG->insertChildNodeHere(T1);
+	//SG->insertChildNodeHere(T1);
 	//go to the child node
-	SG->goToChild(0);
+	//SG->goToChild(0);
 
 
 	//MODEL
 	//we will now add a teapot model to the graph as a child of the
 	//transformation node
-	NodeModel *M1 = new NodeModel(Teapot);
+	//NodeModel *M1 = new NodeModel(Teapot);
 	//insert the node into the graph
-	SG->insertChildNodeHere(M1);
+	//SG->insertChildNodeHere(M1);
 
 
 	//THE SAME FLOW CAN BE USED TO DYNAMICALLY ADD NODES
@@ -88,6 +96,41 @@ void keyboard(unsigned char key, int x, int y)
 		case 27:
 			exit (0);
 			break;
+		case 's':
+			//solid sphere
+			
+			ip.x = 0;
+			ip.y = 0;
+			ip.z = 0;
+			transforms.push_back(new NodeTransform(Translate, ip));
+			//NodeTransform *T1 = new NodeTransform(Translate, ip);
+			SG->insertChildNodeHere(transforms.at(transforms.size()-1));
+			//GO TO NEXT CHILD
+			SG->goToChild(0);
+
+			models.push_back(new NodeModel(Teapot));
+			//NodeModel *M1 = new NodeModel(Teapot);
+			SG->insertChildNodeHere(models.at(models.size()-1));
+			break;
+		case 'd':
+			//solid sphere
+			//Vector3D ip;
+			ip.x = 0;
+			ip.y = 0;
+			ip.z = 0;
+			transforms.push_back(new NodeTransform(Translate, ip));
+			//NodeTransform *T1 = new NodeTransform(Translate, ip);
+			SG->insertChildNodeHere(transforms.at(transforms.size()-1));
+			//SG->insertChildNodeHere(T1);
+			//GO TO NEXT CHILD
+			SG->goToChild(1);
+
+			//NodeModel *M1 = new NodeModel(Cube);
+			models.push_back(new NodeModel(Cube));
+			//SG->insertChildNodeHere(M1);
+			SG->insertChildNodeHere(models.at(models.size()-1));
+			break;
+
 	}
 	glutPostRedisplay();
 }

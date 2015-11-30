@@ -53,6 +53,9 @@ void SceneGraph::goToParent(){
 
 //inserts a child node into the current node
 void SceneGraph::insertChildNodeHere(Node *node){
+	//add our parent to our child node
+	node->parent = currentNode;
+	//now lets add it to our children!
 	currentNode->children->push_back(node);
 }
 
@@ -74,11 +77,11 @@ bool SceneGraph::Intersect(int x, int y){
 	printf("%f %f %f %f %f %f\n",start[0],start[1],start[2],finish[0],finish[1],finish[2]);
 	// get point on the 'near' plane (third param is set to 0.0)
 	gluUnProject(winX, winY, 0.0, matModelView, matProjection, 
-         viewport, &start[0], &start[1], &start[2]); 
+		 viewport, &start[0], &start[1], &start[2]); 
 
 	// get point on the 'far' plane (third param is set to 1.0)
 	gluUnProject(winX, winY, 1.0, matModelView, matProjection, 
-         viewport, &finish[0], &finish[1], &finish[2]); 
+		 viewport, &finish[0], &finish[1], &finish[2]); 
 
 	printf("%f %f %f %f %f %f\n",start[0],start[1],start[2],finish[0],finish[1],finish[2]);
 
