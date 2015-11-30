@@ -19,19 +19,14 @@ SceneGraph::SceneGraph(){
 	currentNode = rootNode;
 	printf("scene graph init done\n");
 	// R0
-	//vec3D near = vec3D();
+	vec3D near = vec3D();
 	// R1
-	//vec3D far = vec3D(1,1,1);
-	//vec3D distance = (far - near).normalize();
+	vec3D far = vec3D(1,1,1);
+	vec3D distance = (far - near).normalize();
 	//start = near.returnDoubleArray();
 	//finish = far.returnDoubleArray();
 	//allocate matricies memory
-	double matModelView[16], matProjection[16]; 
-	int viewport[4]; 
 	//grab the matricies
-	glGetDoublev(GL_MODELVIEW_MATRIX, matModelView); 
-	glGetDoublev(GL_PROJECTION_MATRIX, matProjection); 
-	glGetIntegerv(GL_VIEWPORT, viewport); 
 	//printf("window calculations done\n");
 }
 
@@ -73,7 +68,6 @@ void SceneGraph::draw(){
 }
 
 bool SceneGraph::Intersect(int x, int y){
-
 	//vectors
 	double start[] = {0,0,0}, finish[] = {1,1,1};
 
@@ -94,62 +88,12 @@ bool SceneGraph::Intersect(int x, int y){
 	gluUnProject(winX, winY, 1.0, matModelView, matProjection, 
 		 viewport, &finish[0], &finish[1], &finish[2]); 
 
+	near.update(start);
+	far.update(finish);
+	distance = (far - near).normalize();
 
-	printf("near point: %f,%f,%f\n", start[0], start[1], start[2]);
-	printf("far point: %f,%f,%f\n", finish[0], finish[1], finish[2]);
+	vec3D Ray = vec3D(distance.dot(distance),near.dot(distance)*2.0,near.dot(near) - 1);
 
-	//check for intersection against sphere!
-	//hurray!
-
-	double A, B, C;
-
-	double R0x, R0y, R0z;
-	double Rdx, Rdy, Rdz;
-
-	R0x = start[0];
-	R0y = start[1];
-	R0z = start[2];
-
-	Rdx = finish[0] - start[0];
-	Rdy = finish[1] - start[1];
-	Rdz = finish[2] - start[2];
-
-	//magnitude!
-	double M = sqrt(Rdx*Rdx + Rdy*Rdy + Rdz* Rdz);
-
-	//unit vector!
-	Rdx /= M;
-	Rdy /= M;
-	Rdz /= M;
-
-	//A = Rd dot Rd
-	A = Rdx*Rdx + Rdy*Rdy + Rdz*Rdz;
-
-	double Btempx, Btempy, Btempz;
-	Btempx = R0x;
-	Btempy =  R0y;
-	Btempz =  R0z;
-
-	B = Btempx * Rdx + Btempy * Rdy + Btempz *Rdz;
-	B *= 2.0;
-
-	C = R0x*R0x + R0y*R0y + R0z* R0z - 1;
-
-
-	double sq = B*B  - 4*A*C;
-
-	double t0 = 0, t1 = 0;
-
-	if(sq < 0)
-		printf("no Intersection!!!\n");
-	else{
-		t0 = ((-1) * B + sqrt(sq))/(2*A);
-		t1 = ((-1) * B - sqrt(sq))/(2*A);
-
-		printf("Intersection at: t = %f, and t = %f\n", t0, t1);
-	}
-
-
-	return false; //else returns false
+	return Ray.IntersectSphere();
 
 }

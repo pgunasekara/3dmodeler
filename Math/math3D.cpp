@@ -101,8 +101,6 @@ void vec3D::applyMatrix(float* matrix){
 }
 
 bool vec3D::IntersectSphere(){
-	printf("%f %f %f\n",x,y,z);
-
 	double sq = y*y  - 4*x*z;
 
 	double t0 = 0, t1 = 0;
@@ -114,10 +112,16 @@ bool vec3D::IntersectSphere(){
 		t1 = ((-1) * y - sqrt(sq))/(2*x);
 
 		printf("Intersection at: t = %f, and t = %f\n", t0, t1);
-		return true;
 	}
 
+
 	return false; //else returns false
+}
+
+void vec3D::update(double v[]){
+	x = v[0];
+	y = v[1];
+	z = v[2];
 }
 
 /* POINTS */
