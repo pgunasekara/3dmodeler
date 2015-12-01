@@ -24,13 +24,16 @@
 #include "nodeGroup.h"
 #include "nodeModel.h"
 #include "nodeTransform.h"
+#include "Math/camera.h"
 #include <vector>
 
-float pos[] = {0,1,0};
+float mouseX,mouseY,globalW,globalH;
+bool buttonDown = false;
 float camPos[] = {2.5, 2.5, 5};
-float angle = 0.0f;
+float angle = 0.01f;
 bool PlaneExist = false;
 Hitbox *hit;
+Camera camera;
 
 vector<NodeTransform*> transforms;
 vector<NodeModel*> models;
@@ -52,7 +55,7 @@ double* finish = new double[3];
 SceneGraph *SG;
 
 void mouse(int button, int state, int x, int y){
-	if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN){
+	if(button ==  GLUT_RIGHT_BUTTON && state == GLUT_DOWN){
 		SG->Intersect(x,y,hit);
 	}
 }
@@ -114,6 +117,30 @@ void keyboard(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
+		case 'W':
+			camera.Move(FORWARD);
+			glutPostRedisplay();
+			break;
+		case 'A':
+			camera.Move(LEFT);
+			glutPostRedisplay();
+			break;
+		case 'S':
+			camera.Move(BACK);
+			glutPostRedisplay();
+			break;
+		case 'D':
+			camera.Move(RIGHT);
+			glutPostRedisplay();
+			break;
+		case 'Q':
+			camera.Move(DOWN);
+			glutPostRedisplay();
+			break;
+		case 'E':
+			camera.Move(UP);
+			glutPostRedisplay();
+			break;
 		case 'q':
 		case 27:
 			exit (0);
@@ -171,63 +198,71 @@ void keyboard(unsigned char key, int x, int y)
 	glutPostRedisplay();
 }
 
-void special(int key, int x, int y)
-{
-	/* arrow key presses move the camera */
-	switch(key)
-	{
-		case GLUT_KEY_LEFT:
-			camPos[0]-=0.1;
-			break;
-
-		case GLUT_KEY_RIGHT:
-			camPos[0]+=0.1;
-			break;
-
+/*
+void special(int key, int x, int y){
+	switch(key){
 		case GLUT_KEY_UP:
-			camPos[2] -= 0.1;
+			camera.Spin(SUP,angle);
+			glutPostRedisplay();
 			break;
-
 		case GLUT_KEY_DOWN:
-			camPos[2] += 0.1;
+			camera.Spin(SDOWN,angle);
+			glutPostRedisplay();
 			break;
-		
-		case GLUT_KEY_HOME:
-			camPos[1] += 0.1;
+		case GLUT_KEY_LEFT:
+			camera.Spin(SLEFT,angle);
+			glutPostRedisplay();
 			break;
-
-		case GLUT_KEY_END:
-			camPos[1] -= 0.1;
+		case GLUT_KEY_RIGHT:
+			camera.Spin(SRIGHT,angle);
+			glutPostRedisplay();
 			break;
-
 	}
-	glutPostRedisplay();
 }
 
+*/
 void init(void)
 {	GLuint id = 1;
-	start[0] = 0;
-	start[1] = 0;
-	start[2] = 0;
-	finish[0] = 1;
-	finish[1] = 1;
-	finish[2] = 1;
-
-	glEnable(GLUT_DEPTH);
-
-	glClearColor(0, 0, 0, 0);
-	glColor3f(1, 1, 1);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(45, 1, 1, 100);
 
 	//init our scenegraph
 	SG = new SceneGraph();
+	camera = Camera();
 
 	//add various nodes
 	//initializing our world
 	initGraph();
+}
+
+void passive(int x,int y){
+	if ((x - mouseX) > 0){
+    	camera.Spin(SRIGHT,angle);
+	}
+	else if ((x - mouseX) < 0){ 
+    	camera.Spin(SLEFT,angle);
+	}
+	if ((y - mouseY) > 0){
+		camera.Spin(SDOWN,angle);
+	}else if ((y - mouseY) < 0){
+		camera.Spin(SUP,angle);
+	} 
+	glutPostRedisplay();
+}
+
+void reshape(int w,int h){
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	glClearColor(0, 0, 0, 0);
+	gluPerspective(45,1,1,100);
+
+	glMatrixMode(GL_MODELVIEW);
+	glViewport(0,0,w,h);
+
+	globalW = w;
+	globalH = h;
+	mouseX = w/2;
+	mouseY = h/2;
+	gluLookAt(2.5, 2.5, 2.5, 0, 0, 0, 0, 1, 0);
 }
 
 
@@ -236,14 +271,7 @@ void init(void)
  */
 void display(void)
 {
-	float origin[3] = {0,0,0};
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	gluLookAt(camPos[0], camPos[1], camPos[2], 0,0,0, 0,1,0);
-	glColor3f(1,1,1);
 
 	//draw the sceneGraph
 	drawAxis();
@@ -268,12 +296,15 @@ int main(int argc, char** argv)
 
 	glutCreateWindow("SimpleSceneGraph");	//creates the window
 
+	init();
+
 	glutDisplayFunc(display);	//registers "display" as the display callback function
 	glutKeyboardFunc(keyboard);
-	glutSpecialFunc(special);
+	//glutSpecialFunc(special);
 	glutMouseFunc(mouse);
-
-	init();
+	glutReshapeFunc(reshape);
+	//glutMotionFunc(motion);
+	glutPassiveMotionFunc(passive);
 
 	glutMainLoop();				//starts the event loop
 	return(0);					//return may not be necessary on all compilers

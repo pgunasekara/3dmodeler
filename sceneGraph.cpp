@@ -100,14 +100,16 @@ bool SceneGraph::Intersect(int x, int y,Hitbox* hit){
 	far.update(finish);
 	distance = (far - near).normalize();
 
+/*
 	if (hit->Intersect(near,distance)){
 		printf("hit\n");
 	}else {
 		printf("miss\n");
 	}
+	*/
 
-	//vec3D Ray = vec3D(distance.dot(distance),near.dot(distance)*2.0,near.dot(near) - 1);
+	vec3D Ray = vec3D(distance.dot(distance),near.dot(distance)*2.0,near.dot(near) - 1);
 
-	//return Ray.IntersectSphere();
+	return Ray.IntersectSphere();
 
 }

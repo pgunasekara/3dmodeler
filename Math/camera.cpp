@@ -22,15 +22,15 @@ We both informed Dr. Gwosdz and recieved his approval in using this code
 
 
 Camera::Camera(){
-	camera_position = vec3D(55,10,55);
+	camera_position = vec3D(2.5,2.5,2.5);
 	camera_look_at = vec3D(0,0,0);
 	camera_up = vec3D(0, 1, 0);
 	camera_position_delta = vec3D();
 
-	light_position = vec3D(0,0,0);
-	spot_direction = vec3D(camera_look_at - camera_position);
+	//light_position = vec3D(0,0,0);
+	//spot_direction = vec3D(camera_look_at - camera_position);
 
-	camera_scale = 1.0f;
+	camera_scale = 0.3f;
 	camera_pitch = 0.0;
 	camera_heading = 0.0;
 	rotate_camera = false;
@@ -73,13 +73,13 @@ void Camera::Update() {
 		float pitchAngle = tan(height/length);
 
 		// allows or doesnt allow rotation around x and applies both rotations together to new quaternion
-		if ((pitchAngle > 1.0  && camera_pitch >= 0) || (pitchAngle < -1.0 && camera_pitch <= 0)){
-			temp = angleAxis(camera_heading, camera_up).normalize();
-		}else{
-			pitch_quat = angleAxis(camera_pitch, axis);
-			heading_quat = angleAxis(camera_heading, camera_up);
-			temp = pitch_quat.cross(heading_quat).normalize();
-		}
+		//if ((pitchAngle > 1.0  && camera_pitch >= 0) || (pitchAngle < -1.0 && camera_pitch <= 0)){
+		//	temp = angleAxis(camera_heading, camera_up).normalize();
+		//}else{
+		pitch_quat = angleAxis(camera_pitch, axis);
+		heading_quat = angleAxis(camera_heading, camera_up);
+		temp = pitch_quat.cross(heading_quat).normalize();
+		//}
 
 		// updates rotation matrix stored by quaternion
 		temp.updateRotationMatrix();
@@ -181,12 +181,3 @@ void Camera::ChangeHeading(float degrees) {
 		camera_heading += degrees;
 	}
 }
-/*
-bool Camera::checkHitBox(vec3D position, vec3D delta,mesh3D *mesh){
-	for (int i = 0; i < mesh->faces.size(); i++){
-		if (!position.checkCollision(mesh3D.faces[i]) && (camera_position+camera_position_delta).checkCollision(mesh3D->faces[i])){
-			// Don't let it move
-		}
-	}
-}
-*/
