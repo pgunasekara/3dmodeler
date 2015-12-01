@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "Math/camera.h"
+#include "Math/Hitbox.h"
 #include "structs.h"
 
 //sceneGraph
@@ -28,6 +29,8 @@
 float pos[] = {0,1,0};
 float camPos[] = {2.5, 2.5, 5};
 float angle = 0.0f;
+bool PlaneExist = false;
+Hitbox *hit;
 
 vector<NodeTransform*> transforms;
 vector<NodeModel*> models;
@@ -50,9 +53,28 @@ SceneGraph *SG;
 
 void mouse(int button, int state, int x, int y){
 	if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN){
-		SG->Intersect(x,y);
+		SG->Intersect(x,y,hit);
 	}
 }
+
+/* drawAxis() -- draws an axis at the origin of the coordinate system
+ *   red = +X axis, green = +Y axis, blue = +Z axis
+ */
+void drawAxis()
+{
+	glBegin(GL_LINES);
+	glColor3f(1, 0, 0);
+	glVertex3f(0,0,0);
+	glVertex3f(50,0,0);
+	glColor3f(0,1,0);
+	glVertex3f(0,0,0);
+	glVertex3f(0,50,0);
+	glColor3f(0,0,1);
+	glVertex3f(0,0,0);
+	glVertex3f(0,0,50);
+	glEnd();
+}
+
 
 //function which will populate a sample graph 
 void initGraph(){
@@ -111,6 +133,7 @@ void keyboard(unsigned char key, int x, int y)
 			models.push_back(new NodeModel(Teapot));
 			//NodeModel *M1 = new NodeModel(Teapot);
 			SG->insertChildNodeHere(models.at(models.size()-1));
+			hit = new Hitbox();
 			break;
 		case 'd':
 			//solid sphere
@@ -129,6 +152,8 @@ void keyboard(unsigned char key, int x, int y)
 			models.push_back(new NodeModel(Cube));
 			//SG->insertChildNodeHere(M1);
 			SG->insertChildNodeHere(models.at(models.size()-1));
+			hit = new Hitbox();
+			PlaneExist = true;
 			break;
 
 	}
@@ -210,7 +235,11 @@ void display(void)
 	glColor3f(1,1,1);
 
 	//draw the sceneGraph
+	drawAxis();
 	SG->draw();
+	if (PlaneExist){
+		hit->draw();
+	}
 
 	glutSwapBuffers();
 }

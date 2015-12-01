@@ -1,7 +1,7 @@
-#include "math3D.h"
 #include <cmath>
 #include <sstream>
 #include <fstream>
+#include "math3D.h"
 #ifdef __APPLE__
 #  include <OpenGL/gl.h>
 #  include <OpenGL/glu.h>
@@ -77,9 +77,9 @@ void vec3D::reset(){
 float* vec3D::returnArray(){
 	float *vert = new float[3];
 
-	vert[0] = x;
-	vert[1] = y;
-	vert[2] = z;
+	vert[0] = static_cast<float>(x);
+	vert[1] = static_cast<float>(y);
+	vert[2] = static_cast<float>(z);
 
 	return vert;
 }
@@ -112,10 +112,14 @@ bool vec3D::IntersectSphere(){
 		t1 = ((-1) * y - sqrt(sq))/(2*x);
 
 		printf("Intersection at: t = %f, and t = %f\n", t0, t1);
+		return true;
 	}
+	return false;
+}
 
+bool vec3D::IntersectCube(){
 
-	return false; //else returns false
+	return true;
 }
 
 void vec3D::update(double v[]){
@@ -163,10 +167,9 @@ void vertex3D::movePoint(vec3D v){
 float* vertex3D::returnArray(){
 	float *vert = new float[3];
 
-	vert[0] = x;
-	vert[1] = y;
-	vert[2] = z;
-
+	vert[0] = static_cast<float>(x);
+	vert[1] = static_cast<float>(y);
+	vert[2] = static_cast<float>(z);
 	return vert;
 }
 
@@ -401,7 +404,6 @@ void Mesh3D::loadObj(char* filename){
 	    myfile.close();
 	}
 }
-
 
 /* STATIC FUNCTIONS */
 

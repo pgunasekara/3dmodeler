@@ -3,6 +3,7 @@
 
 #include "node.h"
 #include "Math/math3D.h"
+#include "Math/Hitbox.h"
 
 class SceneGraph{
 public:
@@ -14,7 +15,7 @@ public:
 	void goToParent();
 	void insertChildNodeHere(Node *node);
 	void deleteThisNode();
-	bool Intersect(int x, int y);
+	bool Intersect(int x, int y,Hitbox* hit);
 
 	//Scene Graph Draw
 	void draw();
@@ -23,8 +24,8 @@ public:
 	vec3D near,far,distance;
 	double matModelView[16], matProjection[16]; 
 	int viewport[4]; 
-	//double* start;
-	//double* finish;
+	double* start;
+	double* finish;
 
 private:
 	Node *currentNode;

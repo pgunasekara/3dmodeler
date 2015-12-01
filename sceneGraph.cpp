@@ -11,6 +11,7 @@
 #include "sceneGraph.h"
 #include "node.h"
 #include "Math/math3D.h"
+#include "Math/Hitbox.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -23,11 +24,6 @@ SceneGraph::SceneGraph(){
 	// R1
 	vec3D far = vec3D(1,1,1);
 	vec3D distance = (far - near).normalize();
-	//start = near.returnDoubleArray();
-	//finish = far.returnDoubleArray();
-	//allocate matricies memory
-	//grab the matricies
-	//printf("window calculations done\n");
 }
 
 //Scene Graph Navigation
@@ -67,14 +63,15 @@ void SceneGraph::draw(){
 	rootNode->draw();
 }
 
-bool SceneGraph::Intersect(int x, int y){
-	//vectors
-	double start[] = {0,0,0}, finish[] = {1,1,1};
+bool SceneGraph::Intersect(int x, int y,Hitbox* hit){
 
 	//grab the matricies
 	glGetDoublev(GL_MODELVIEW_MATRIX, matModelView); 
 	glGetDoublev(GL_PROJECTION_MATRIX, matProjection); 
 	glGetIntegerv(GL_VIEWPORT, viewport); 
+
+	start = near.returnDoubleArray();
+	finish = far.returnDoubleArray();
 
 	//unproject the values
 	double winX = (double)x; 
@@ -92,8 +89,14 @@ bool SceneGraph::Intersect(int x, int y){
 	far.update(finish);
 	distance = (far - near).normalize();
 
-	vec3D Ray = vec3D(distance.dot(distance),near.dot(distance)*2.0,near.dot(near) - 1);
+	if (hit->Intersect(near,distance)){
+		printf("hit\n");
+	}else {
+		printf("miss\n");
+	}
 
-	return Ray.IntersectSphere();
+	//vec3D Ray = vec3D(distance.dot(distance),near.dot(distance)*2.0,near.dot(near) - 1);
+
+	//return Ray.IntersectSphere();
 
 }

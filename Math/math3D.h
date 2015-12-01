@@ -36,7 +36,9 @@ public:
 	void applyMatrix(float* matrix);
 	//Calculates whether Ray intersects with Sphere
 	bool IntersectSphere();
-	// updates vectorthrough passed in array
+	//Calculates whether Ray intersects cube
+	bool IntersectCube();
+	// updates vector through passed in array
 	void update(double v[]);
 
 	//member variables
