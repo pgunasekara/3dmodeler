@@ -120,7 +120,9 @@ void keyboard(unsigned char key, int x, int y)
 			break;
 		case 's':
 			//solid sphere
-			
+			//Add the new transform at the root node
+			SG->goToRoot();
+
 			ip.x = 0;
 			ip.y = 0;
 			ip.z = 0;
@@ -128,7 +130,8 @@ void keyboard(unsigned char key, int x, int y)
 			//NodeTransform *T1 = new NodeTransform(Translate, ip);
 			SG->insertChildNodeHere(transforms.at(transforms.size()-1));
 			//GO TO NEXT CHILD
-			SG->goToChild(0);
+			SG->goToChild(currentChild);
+			currentChild++;
 
 			models.push_back(new NodeModel(Teapot));
 			//NodeModel *M1 = new NodeModel(Teapot);
@@ -138,15 +141,16 @@ void keyboard(unsigned char key, int x, int y)
 		case 'd':
 			//solid sphere
 			//Vector3D ip;
+			SG->goToRoot();
 			ip.x = 0;
-			ip.y = 0;
-			ip.z = 0;
+			ip.y = 1;
+			ip.z = 1;
 			transforms.push_back(new NodeTransform(Translate, ip));
 			//NodeTransform *T1 = new NodeTransform(Translate, ip);
 			SG->insertChildNodeHere(transforms.at(transforms.size()-1));
 			//SG->insertChildNodeHere(T1);
 			//GO TO NEXT CHILD
-			SG->goToChild(1);
+			SG->goToChild(currentChild);
 
 			//NodeModel *M1 = new NodeModel(Cube);
 			models.push_back(new NodeModel(Cube));
@@ -156,6 +160,13 @@ void keyboard(unsigned char key, int x, int y)
 			PlaneExist = true;
 			break;
 
+		case 'a':
+			SG->goToChild(1);
+			ip.x += 3;
+			ip.y += 3;
+			ip.x += 0;
+			NodeTransform *tmp = new NodeTransform(Translate, ip);
+			break;
 	}
 	glutPostRedisplay();
 }

@@ -10,7 +10,7 @@
 #else
 #  include <GL/gl.h>
 #  include <GL/glu.h>
-#  include <GL/freeglut.h>
+#  include <GL/freeglut.h>	
 #endif
 #include <stdio.h>
 #include <stdlib.h>

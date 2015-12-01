@@ -45,6 +45,15 @@ void SceneGraph::goToParent(){
 		currentNode = currentNode->parent;
 }
 
+void SceneGraph::transformNode(Node *node)
+{
+
+	if(node->nodeType == transformation)
+	{
+
+	}
+}
+
 //inserts a child node into the current node
 void SceneGraph::insertChildNodeHere(Node *node){
 	//add our parent to our child node
@@ -54,8 +63,10 @@ void SceneGraph::insertChildNodeHere(Node *node){
 }
 
 //deletes the current node, relinking the children as necessary
-void SceneGraph::deleteThisNode(){
-	//TODO
+void SceneGraph::deleteThisNode()
+{
+	//Remove the current node, check if it has subnodes, and relink to the node above this one
+	goToParent();			//switch to parent node
 }
 
 //draw the scenegraph
