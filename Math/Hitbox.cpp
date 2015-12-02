@@ -135,6 +135,7 @@ bool Plane::Intersect(vec3D v0,vec3D vD, float* tNear, float* tFar, vertex3D min
 
 
 void Plane::scale(vec3D transform){
+	
 
 }
 void Plane::Translate(vec3D transform){
@@ -169,6 +170,27 @@ Hitbox::Hitbox(){
 	Planes.push_back(new Plane(v1,v5,v8,v4,false,true,true)); // left face
 	minP = vertex3D(-0.5,-0.5,-0.5);
 	maxP = vertex3D(0.5,0.5,0.5);
+
+}
+
+Hitbox::Hitbox(vertex3D low, vertex3D high){
+	vertex3D v1 = vertex3D(low.x,low.y,high.z);
+	vertex3D v2 = vertex3D(high.x,low.y,high.z);
+	vertex3D v3 = vertex3D(high.x,high.y,high.z);
+	vertex3D v4 = vertex3D(low.x,high.y,high.z);
+	vertex3D v5 = vertex3D(low.x,low.y,low.z);
+	vertex3D v6 = vertex3D(high.x,low.y,low.z);
+	vertex3D v7 = vertex3D(high.x,high.y,low.z);
+	vertex3D v8 = vertex3D(low.x,high.y,low.z);
+
+	Planes.push_back(new Plane(v1,v2,v3,v4,true,true,false)); // front face
+	Planes.push_back(new Plane(v5,v6,v7,v8,true,true,false)); // back face
+	Planes.push_back(new Plane(v4,v3,v7,v8,true,false,true)); // top face
+	Planes.push_back(new Plane(v1,v2,v6,v5,true,false,true)); // bottom face
+	Planes.push_back(new Plane(v2,v6,v7,v3,false,true,true)); // right face
+	Planes.push_back(new Plane(v1,v5,v8,v4,false,true,true)); // left face
+	minP = vertex3D(low.x,low.y,low.z);
+	maxP = vertex3D(high.x,high.y,high.z);
 
 }
 

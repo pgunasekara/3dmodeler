@@ -23,6 +23,7 @@ public:
 class Hitbox{
 public:
 	Hitbox();
+	Hitbox(vertex3D low, vertex3D high);
 	void draw();
 	bool Intersect(vec3D v0,vec3D vD);
 	bool IntersectSphere(vec3D Ray);
