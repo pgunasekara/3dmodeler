@@ -50,7 +50,7 @@ void SceneGraph::transformNode(Node *node)
 
 	if(node->nodeType == transformation)
 	{
-
+		//currentNode.
 	}
 }
 
@@ -60,19 +60,84 @@ void SceneGraph::insertChildNodeHere(Node *node){
 	node->parent = currentNode;
 	//now lets add it to our children!
 	currentNode->children->push_back(node);
+	//Switch to the new current node
+	currentNode = node;
 }
+
 
 //deletes the current node, relinking the children as necessary
 void SceneGraph::deleteThisNode()
 {
 	//Remove the current node, check if it has subnodes, and relink to the node above this one
-	goToParent();			//switch to parent node
+	//Delete Any dangling nodes
+
+	SceneGraph::goToParent();
+	currentNode->children->clear();
+
+	/*Node *tmpNode = currentNode;
+	SceneGraph::goToParent();
+	//Link children to grandparent
+
+	//Now we need to link nodes below it to the new node
+	for(int i = 0; i < currentNode->children->size(); i++)
+	{
+		tmpNode->children->push_back(SG->currentNode->children->at(i));
+		//The current node also needs to have it's old nodes removed
+	}
+
+	//The only node the currentNode should have is the the new node
+	
+	SG->currentNode->children->clear();
+
+
+	/*
+	while(currentNode->nodeType != group)
+	{
+		SceneGraph::goToParent();			//switch to parent node
+		currentNode->children->clear();		//Remove child nodes
+		//Continue to do this in a loop till we reach the group node
+		//which is the top node
+	}*/
+
+	
+	//delete this;
 }
 
 //draw the scenegraph
 void SceneGraph::draw(){
 	rootNode->draw();
 }
+
+
+/*THIS NEEDS TO BE FIXED SO THAT IT DOESN't JUST SEARCH TOP NODES*/
+
+
+void SceneGraph::searchByID(int ID)
+{
+	//Search for the ID that the program gives, and set the currentNode to be the node from that ID
+	Node *tmpnode = currentNode;
+
+	//recursively call our children
+	if(currentNode->ID != ID)
+	{
+		//Go to the top Node, and search all nodes
+		currentNode = rootNode;
+
+		const int numberOfChildren = currentNode->children->size();
+		if (numberOfChildren > 0)
+		{
+			for (int i = 0; i < numberOfChildren; i++)
+			{
+				if(currentNode->children->at(i)->ID == ID)
+				{
+					currentNode = currentNode->children->at(i);
+					break;
+				}
+			}
+		}
+	}
+}
+
 
 bool SceneGraph::Intersect(int x, int y,Hitbox* hit){
 

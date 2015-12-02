@@ -15,6 +15,7 @@ public:
 	void goToParent();
 	void insertChildNodeHere(Node *node);
 	void deleteThisNode();
+	void searchByID(int ID);
 	bool Intersect(int x, int y,Hitbox* hit);
 
 	//Scene Graph Draw
@@ -27,9 +28,10 @@ public:
 	int viewport[4]; 
 	double* start;
 	double* finish;
+	Node *currentNode;
 
 private:
-	Node *currentNode;
+	
 	Node *rootNode;
 };
 

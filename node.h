@@ -6,6 +6,7 @@
 //Nodes
 
 #include <vector>
+#include "structs.h"
 using namespace std;
 
 extern int getID();

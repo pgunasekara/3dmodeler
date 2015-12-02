@@ -1,5 +1,6 @@
 #include "node.h"
 #include <stdio.h>
+#include "structs.h"
 
 Node::Node(){	//constructor
 	ID = getID();

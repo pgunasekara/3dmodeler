@@ -19,14 +19,34 @@
 enum ModelType{
 	Sphere,
 	Cube,
+	Cone,
+	Cylinder,
+	Torus,
 	Teapot,
+	Tetrahedron,
+	Octahedron,
+	Dodecahedron,
+	Icosahedron,
 	Custom
+};
+
+enum Materials
+{
+	mat1, mat2, mat3, mat4, mat5
 };
 
 class NodeModel:public Node{
 public:
 	NodeModel(ModelType whatType);	//constructor
 	ModelType modelType;
+
+	Vector3D position, rotation, scale;
+	Materials currentMat;
+
+	//Bounding box information is already specified in the math library
+
+
+
 
 	virtual void nodeSpecificCodeDown();
 };
