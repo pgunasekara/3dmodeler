@@ -57,7 +57,7 @@ vec3D vec3D::cross(vec3D other) {
 	return vec3D(cx,cy,cz);
 };
 
-double vec3D::dot(vec3D other) {
+float vec3D::dot(vec3D other) {
 	// dot product of vectors
 	return x*other.x + y*other.y + z*other.z;
 };
@@ -100,32 +100,14 @@ void vec3D::applyMatrix(float* matrix){
 	z = matrix[8]*x + matrix[9]*y + matrix[10]*z + matrix[11];
 }
 
-bool vec3D::IntersectSphere(){
-	double sq = y*y  - 4*x*z;
-
-	double t0 = 0, t1 = 0;
-
-	if(sq < 0)
-		printf("no Intersection!!!\n");
-	else{
-		t0 = ((-1) * y + sqrt(sq))/(2*x);
-		t1 = ((-1) * y - sqrt(sq))/(2*x);
-
-		printf("Intersection at: t = %f, and t = %f\n", t0, t1);
-		return true;
-	}
-	return false;
-}
-
-bool vec3D::IntersectCube(){
-
-	return true;
-}
-
 void vec3D::update(double v[]){
 	x = v[0];
 	y = v[1];
 	z = v[2];
+}
+
+bool vec3D::isOrthogonal(vec3D v){
+	return (dot(v) == 0.0);
 }
 
 /* POINTS */

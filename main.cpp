@@ -30,7 +30,7 @@
 float mouseX,mouseY,globalW,globalH;
 bool buttonDown = false;
 float camPos[] = {2.5, 2.5, 5};
-float angle = 0.01f;
+float angle = 0.005f;
 bool PlaneExist = false;
 Hitbox *hit;
 Camera camera;
@@ -55,7 +55,7 @@ double* finish = new double[3];
 SceneGraph *SG;
 
 void mouse(int button, int state, int x, int y){
-	if(button ==  GLUT_RIGHT_BUTTON && state == GLUT_DOWN){
+	if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN){
 		SG->Intersect(x,y,hit);
 	}
 }
@@ -198,29 +198,6 @@ void keyboard(unsigned char key, int x, int y)
 	glutPostRedisplay();
 }
 
-/*
-void special(int key, int x, int y){
-	switch(key){
-		case GLUT_KEY_UP:
-			camera.Spin(SUP,angle);
-			glutPostRedisplay();
-			break;
-		case GLUT_KEY_DOWN:
-			camera.Spin(SDOWN,angle);
-			glutPostRedisplay();
-			break;
-		case GLUT_KEY_LEFT:
-			camera.Spin(SLEFT,angle);
-			glutPostRedisplay();
-			break;
-		case GLUT_KEY_RIGHT:
-			camera.Spin(SRIGHT,angle);
-			glutPostRedisplay();
-			break;
-	}
-}
-
-*/
 void init(void)
 {	GLuint id = 1;
 

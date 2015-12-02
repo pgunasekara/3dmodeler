@@ -27,9 +27,12 @@ Plane::Plane(vertex3D a, vertex3D b, vertex3D c, vertex3D d,bool xPlane, bool yP
 	this->b = b;
 	this->c = c;
 	this->d = d;
+	vec3D v1 = vec3D(a,d);
+	vec3D v2 = vec3D(a,b);
 	this->xPlane = xPlane;
 	this->yPlane = yPlane;
 	this->zPlane = zPlane;
+	norm = v1.cross(v2);
 }
 
 
@@ -45,11 +48,9 @@ void Plane::draw(){
 //FIX THIS FJSDOAIJFDSIOAJFISDO
 bool Plane::Intersect(vec3D v0,vec3D vD, float* tNear, float* tFar, vertex3D minP, vertex3D maxP){
 	float t1,t2;
-	//slab method
-	if (xPlane){
-		if (vD.x == 0.0f) {//ray is parallel to the planes 
+	if (yPlane && zPlane){
+		if (vD.isOrthogonal(norm)) { //ray is parallel to the planes 
 			if (v0.x < minP.x || v0.x > maxP.x) {    
-				printf("xPlane, ray parallel outside slab\n");
 				return false; // outside slab
 			}
 		}else{
@@ -60,27 +61,49 @@ bool Plane::Intersect(vec3D v0,vec3D vD, float* tNear, float* tFar, vertex3D min
 			float temp = t1;
 			t1 = t2;
 			t2 = temp;
+
 		}
-		if (t1 > *tNear || *tNear == -10000000.0f){
+		if (t1 > *tNear){
 			*tNear = t1; // want largest tNear
 		}
-		if (t2 < *tFar || *tFar == 10000000.0f){
+		if (t2 < *tFar){
 			*tFar = t2; // want smallest tFar
 		}
 		if (*tNear > *tFar){
-			printf("xPlane, box missed\n");
 			return false; //box is missed
 		}
 		if (*tFar < 0){
-			printf("xPlane, slab behind origin\n");
 			return false; //Slab behind origion of ray
 		}
-		printf("xPlane , intersection\n");
-		return true;
-	}else if (yPlane){
-		if (vD.y == 0.0f){ //ray is parallel to the planes 
-			if (v0.y < minP.x || v0.y > maxP.x) {    
-				printf("yPlane , outside slab\n");
+	}else if (xPlane && yPlane){
+		if (vD.isOrthogonal(norm)) { //ray is parallel to the planeS
+			if (v0.z < minP.z || v0.z > maxP.z) {    
+				return false; // outside slab
+			}
+		}else{
+			t1 = (minP.z-v0.z)/vD.z;
+			t2 = (maxP.z-v0.z)/vD.z;
+		}
+		if (t1 > t2) {
+			float temp = t1;
+			t1 = t2;
+			t2 = temp;
+		}
+		if (t1 > *tNear){
+			*tNear = t1; // want largest tNear
+		}
+		if (t2 < *tFar){
+			*tFar = t2; // want smallest tFar
+		}
+		if (*tNear > *tFar){
+			return false; //box is missed
+		}
+		if (*tFar < 0){
+			return false; //Slab behind origion of ray
+		}
+	}else if (xPlane && zPlane){
+		if (vD.isOrthogonal(norm)) { //ray is parallel to the planes 
+			if (v0.y < minP.y || v0.y > maxP.y) {    
 				return false; // outside slab
 			}
 		}else{
@@ -91,59 +114,22 @@ bool Plane::Intersect(vec3D v0,vec3D vD, float* tNear, float* tFar, vertex3D min
 			float temp = t1;
 			t1 = t2;
 			t2 = temp;
-		}
-		if (t1 > *tNear || *tNear == -10000000.0f){
-			*tNear = t1; // want largest tNear
-		}
-		if (t2 < *tFar || *tFar == 10000000.0f){
-			*tFar = t2; // want smallest tFar
-		}
-		if (*tNear > *tFar){
-			printf("yPlane , box missed\n");
-			return false; //box is missed
-		}
-		if (*tFar < 0){
-			printf("yPlane, slab behind origin\n");
-			return false; //Slab behind origion of ray
-		}
-		printf("yPlane, all good\n");
-		return true;
-	}else if (zPlane){
-		if (vD.z == 0.0f) {//ray is parallel to the planes 
-			if (v0.z < minP.z || v0.z > maxP.z) {    
-				printf("zPlane , outside slab\n");
-				return false; // outside slab
-			}
-		}else{
-			t1 = (minP.z-v0.z)/vD.z;
-			t2 = (maxP.z-v0.z)/vD.z;
-			printf("%f %f %f %f\n",t1,t2,*tNear,*tFar);
 
 		}
-		if (t1 > t2) {
-			float temp = t1;
-			t1 = t2;
-			t2 = temp;
-		}
 		if (t1 > *tNear){
-			printf("want largest tNear\n");
 			*tNear = t1; // want largest tNear
 		}
 		if (t2 < *tFar){
-			printf("want smallest tFar\n");
 			*tFar = t2; // want smallest tFar
 		}
 		if (*tNear > *tFar){
-			printf("zPlane , box missed\n");
 			return false; //box is missed
 		}
 		if (*tFar < 0){
-			printf("zPlane , slab outside origin\n");
 			return false; //Slab behind origion of ray
 		}
-		printf("zPlane , all good\n");
-		return true;
 	}
+	return true;
 }
 
 
@@ -155,6 +141,8 @@ void Plane::Translate(vec3D transform){
 	b.movePoint(transform);
 	c.movePoint(transform);
 	d.movePoint(transform);
+	norm = norm + transform;
+	
 }
 
 void Plane::Rotate(quaternion quat){
@@ -172,14 +160,15 @@ Hitbox::Hitbox(){
 	vertex3D v7 = vertex3D(0.5,0.5,-0.5);
 	vertex3D v8 = vertex3D(-0.5,0.5,-0.5);
 
-	Planes.push_back(new Plane(v1,v2,v3,v4,false,false,true)); // front face
-	Planes.push_back(new Plane(v5,v6,v7,v8,false,false,true)); // back face
-	Planes.push_back(new Plane(v4,v3,v7,v8,false,true,false)); // top face
-	Planes.push_back(new Plane(v1,v2,v6,v5,false,true,false)); // bottom face
-	Planes.push_back(new Plane(v2,v6,v7,v3,true,false,false)); // right face
-	Planes.push_back(new Plane(v1,v5,v8,v4,true,false,false)); // left face
+	Planes.push_back(new Plane(v1,v2,v3,v4,true,true,false)); // front face
+	Planes.push_back(new Plane(v5,v6,v7,v8,true,true,false)); // back face
+	Planes.push_back(new Plane(v4,v3,v7,v8,true,false,true)); // top face
+	Planes.push_back(new Plane(v1,v2,v6,v5,true,false,true)); // bottom face
+	Planes.push_back(new Plane(v2,v6,v7,v3,false,true,true)); // right face
+	Planes.push_back(new Plane(v1,v5,v8,v4,false,true,true)); // left face
 	minP = vertex3D(-0.5,-0.5,-0.5);
 	maxP = vertex3D(0.5,0.5,0.5);
+
 }
 
 void Hitbox::draw(){
@@ -197,10 +186,26 @@ bool Hitbox::Intersect(vec3D v0,vec3D vD){
 	tFar = &farVal;
 	tNear = &nearVal;
 	for (int i =0 ; i <Planes.size(); i++){
-		printf("%i\n\n",i);
-		if (Planes[i]->Intersect(v0,vD,tNear,tFar,minP,maxP)){
-			return true;
+		if (!Planes[i]->Intersect(v0,vD,tNear,tFar,minP,maxP)){
+			return false;
 		}
+	}
+	return true;
+}
+
+bool Hitbox::IntersectSphere(vec3D Ray){
+	double sq = Ray.y*Ray.y  - 4*Ray.x*Ray.z;
+
+	double t0 = 0, t1 = 0;
+
+	if(sq < 0)
+		printf("no Intersection!!!\n");
+	else{
+		t0 = ((-1) * Ray.y + sqrt(sq))/(2*Ray.x);
+		t1 = ((-1) * Ray.y - sqrt(sq))/(2*Ray.x);
+
+		printf("Intersection at: t = %f, and t = %f\n", t0, t1);
+		return true;
 	}
 	return false;
 }

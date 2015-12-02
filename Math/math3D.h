@@ -23,7 +23,7 @@ public:
 	// cross product with other vector
 	vec3D cross(vec3D other);
 	// dot product with other vector
-	double dot(vec3D other);
+	float dot(vec3D other);
 	// flips direction of vector
 	void flipVector();
 	// reset vector to 0,0,0
@@ -34,12 +34,10 @@ public:
 	double* returnDoubleArray();
 	// multiply the vector by a transformation matrix
 	void applyMatrix(float* matrix);
-	//Calculates whether Ray intersects with Sphere
-	bool IntersectSphere();
-	//Calculates whether Ray intersects cube
-	bool IntersectCube();
 	// updates vector through passed in array
 	void update(double v[]);
+	// check if orthogonal to other vector
+	bool isOrthogonal(vec3D v);
 
 	//member variables
 	float x,y,z;

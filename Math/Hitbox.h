@@ -17,6 +17,7 @@ public:
 	void Rotate(quaternion quat);
 
 	vertex3D a,b,c,d;
+	vec3D norm;
 	bool xPlane,yPlane,zPlane;
 };
 
@@ -26,6 +27,8 @@ public:
 	Hitbox(ModelType whatType);
 	void draw();
 	bool Intersect(vec3D v0,vec3D vD);
+	bool IntersectSphere(vec3D Ray);
+	
 	void scale(vec3D transform);
 	void Translate(vec3D transform);
 	void Rotate(quaternion quat);
@@ -33,5 +36,7 @@ public:
 	vertex3D minP,maxP;
 	vector<Plane*> Planes;
 };
+
+
 
 #endif
