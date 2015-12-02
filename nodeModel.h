@@ -16,6 +16,8 @@
 #include <stdlib.h>
 #include <cmath>
 
+#include "Math/Hitbox.h"
+
 enum ModelType{
 	Sphere,
 	Cube,
@@ -42,6 +44,8 @@ public:
 
 	Vector3D position, rotation, scale;
 	Materials currentMat;
+
+	Hitbox hit;
 
 	//Bounding box information is already specified in the math library
 

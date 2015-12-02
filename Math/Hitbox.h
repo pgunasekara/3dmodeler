@@ -2,7 +2,6 @@
 #define HITBOX_H
 #include <vector>
 #include "math3D.h"
-#include "../nodeModel.h"
 using namespace std;
 
 
@@ -24,7 +23,6 @@ public:
 class Hitbox{
 public:
 	Hitbox();
-	Hitbox(ModelType whatType);
 	void draw();
 	bool Intersect(vec3D v0,vec3D vD);
 	bool IntersectSphere(vec3D Ray);

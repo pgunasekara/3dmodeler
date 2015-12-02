@@ -1,6 +1,7 @@
 #include "math3D.h"
 #include "Hitbox.h"
 #include <cmath>
+#include <stdio.h>
 #ifdef __APPLE__
 #  include <OpenGL/gl.h>
 #  include <OpenGL/glu.h>
