@@ -29,14 +29,14 @@ Then switch current node based on the ID*/
 #include "nodeTransform.h"
 #include <vector>
 
+float mouseX,mouseY,globalW,globalH;
+bool buttonDown = false;
 float pos[] = {0,1,0};
 float camPos[] = {2.5, 2.5, 5};
-float angle = 0.0f;
+float angle = 0.005f;
 bool PlaneExist = false;
 Hitbox *hit;
-
-vector<NodeTransform*> transforms;
-vector<NodeModel*> models;
+Camera camera;
 
 //node ids
 int masterID = 0;
@@ -128,6 +128,33 @@ void keyboard(unsigned char key, int x, int y)
 	
 	switch (key)
 	{
+		case 'W':
+			camera.Move(FORWARD);
+			glutPostRedisplay();
+			break;
+		case 'A':
+			camera.Move(LEFT);
+			glutPostRedisplay();
+			break;
+		case 'S':
+			camera.Move(BACK);
+			glutPostRedisplay();
+			break;
+		case 'D':
+			camera.Move(RIGHT);
+			glutPostRedisplay();
+			break;
+		case 'Q':
+			camera.Move(DOWN);
+			glutPostRedisplay();
+			break;
+		case 'E':
+			camera.Move(UP);
+			glutPostRedisplay();
+			break;
+
+
+
 		case 'q':
 		case 27:
 			exit (0);
@@ -386,9 +413,9 @@ void keyboard(unsigned char key, int x, int y)
 	glutPostRedisplay();
 }
 
-void special(int key, int x, int y)
+/*void special(int key, int x, int y)
 {
-	/* arrow key presses move the camera */
+	/* arrow key presses move the camera *0/
 	switch(key)
 	{
 		case GLUT_KEY_LEFT:
@@ -417,25 +444,12 @@ void special(int key, int x, int y)
 
 	}
 	glutPostRedisplay();
-}
+}*/
 
 void init(void)
-{	GLuint id = 1;
-	start[0] = 0;
-	start[1] = 0;
-	start[2] = 0;
-	finish[0] = 1;
-	finish[1] = 1;
-	finish[2] = 1;
-
-	glEnable(GLUT_DEPTH);
-
-	glClearColor(0, 0, 0, 0);
-	glColor3f(1, 1, 1);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(45, 1, 1, 100);
+{	
+	GLuint id = 1;
+	camera = Camera();
 
 	//init our scenegraph
 	SG = new SceneGraph();
@@ -445,20 +459,32 @@ void init(void)
 	initGraph();
 }
 
+void reshape(int w, int h)
+{
+	glEnable(GLUT_DEPTH);
 
-/* display function - GLUT display callback function
- *		clears the screen, sets the camera position, draws the ground plane and movable box
- */
+	glClearColor(0, 0, 0, 0);
+	glColor3f(1, 1, 1);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(45, 1, 1, 100);
+
+	glMatrixMode(GL_MODELVIEW);
+	glViewport(0,0,w,h);
+
+	globalW = w;
+	globalH = h;
+	mouseX = w/2;
+	mouseY = h/2;
+	gluLookAt(2.5, 2.5, 2.5, 0, 0, 0, 0, 1, 0);
+}
+
+
+
 void display(void)
 {
-	float origin[3] = {0,0,0};
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	gluLookAt(camPos[0], camPos[1], camPos[2], 0,0,0, 0,1,0);
-	glColor3f(1,1,1);
 
 	//draw the sceneGraph
 	drawAxis();
@@ -470,6 +496,21 @@ void display(void)
 	glutSwapBuffers();
 }
 
+void passive(int x,int y){
+	if ((x - mouseX) > 0){
+    	camera.Spin(SRIGHT,angle);
+	}
+	else if ((x - mouseX) < 0){ 
+    	camera.Spin(SLEFT,angle);
+	}
+	if ((y - mouseY) > 0){
+		camera.Spin(SDOWN,angle);
+	}else if ((y - mouseY) < 0){
+		camera.Spin(SUP,angle);
+	} 
+	glutPostRedisplay();
+}
+
 /* main function - program entry point */
 int main(int argc, char** argv)
 {
@@ -477,6 +518,9 @@ int main(int argc, char** argv)
 	
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	
+	initLighting();
+
+	init();
 	
 	glutInitWindowSize(600, 600);
 	glutInitWindowPosition(50, 50);
@@ -485,12 +529,12 @@ int main(int argc, char** argv)
 
 	glutDisplayFunc(display);	//registers "display" as the display callback function
 	glutKeyboardFunc(keyboard);
-	glutSpecialFunc(special);
+	//glutSpecialFunc(special);
+	glutReshapeFunc(reshape);
 	glutMouseFunc(mouse);
+	glutPassiveMotionFunc(passive);
 
-	initLighting();
-
-	init();
+	
 
 	glutMainLoop();				//starts the event loop
 	return(0);					//return may not be necessary on all compilers
