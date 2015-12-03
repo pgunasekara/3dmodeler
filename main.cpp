@@ -356,6 +356,19 @@ void keyboard(unsigned char key, int x, int y)
 
 			NodeTransform *tempNode = new NodeTransform(Translate, translation);
 			
+			int count;
+			for(count = 0; count < SG->hitBoxNodes.size(); count++)
+			{
+				if(SG->hitBoxNodes.at(count)->current == true)
+				{
+					break;
+				}
+			}
+
+			SG->hitBoxNodes.at(count)->hit.Translate(vec3D(translation.x, translation.y, translation.z));
+
+
+
 			//Now we need to link nodes below it to the new node
 			for(int i = 0; i < SG->currentNode->children->size(); i++)
 			{
@@ -394,6 +407,18 @@ void keyboard(unsigned char key, int x, int y)
 
 			NodeTransform *tempNode = new NodeTransform(Translate, translation);
 			
+			
+			int count;
+			for(count = 0; count < SG->hitBoxNodes.size(); count++)
+			{
+				if(SG->hitBoxNodes.at(count)->current == true)
+				{
+					break;
+				}
+			}
+
+			SG->hitBoxNodes.at(count)->hit.Translate(vec3D(translation.x, translation.y, translation.z));
+
 			//Now we need to link nodes below it to the new node
 			for(int i = 0; i < SG->currentNode->children->size(); i++)
 			{
@@ -545,7 +570,7 @@ int main(int argc, char** argv)
 	//glutSpecialFunc(special);
 	glutReshapeFunc(reshape);
 	glutMouseFunc(mouse);
-	glutPassiveMotionFunc(passive);
+	//glutPassiveMotionFunc(passive);
 
 	
 
