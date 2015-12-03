@@ -531,7 +531,7 @@ int main(int argc, char** argv)
 	
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	
-	initLighting();
+	//initLighting();
 
 	init();
 	
