@@ -555,11 +555,9 @@ int main(int argc, char** argv)
 	glutInit(&argc, argv);		//starts up GLUT
 	
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	
-	initLighting();
 
 	init();
-	
+
 	glutInitWindowSize(600, 600);
 	glutInitWindowPosition(50, 50);
 
@@ -570,9 +568,12 @@ int main(int argc, char** argv)
 	//glutSpecialFunc(special);
 	glutReshapeFunc(reshape);
 	glutMouseFunc(mouse);
-	//glutPassiveMotionFunc(passive);
+	glutMotionFunc(passive);
 
-	
+	initLighting();
+
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	glutMainLoop();				//starts the event loop
 	return(0);					//return may not be necessary on all compilers
