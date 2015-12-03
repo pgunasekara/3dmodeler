@@ -7,6 +7,8 @@
 
 #include <vector>
 #include "structs.h"
+#include "Math/Hitbox.h"
+#include "Math/math3D.h"
 using namespace std;
 
 extern int getID();
@@ -31,7 +33,12 @@ public:
 	Node* parent;
 	int currentChild;
 	bool current;
-	
+	Hitbox hit;
+
+	vec3D tr;
+	vec3D sc;
+	quaternion rot;
+
 	void draw();
 	virtual void nodeSpecificCodeDown();
 	virtual void nodeSpecificCodeUp();

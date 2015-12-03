@@ -39,41 +39,41 @@ NodeModel::NodeModel(ModelType whatType){	//constructor
 void NodeModel::nodeSpecificCodeDown(){
 	switch (modelType){
 	case Sphere:
-		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5));
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
 		glutSolidSphere(1, 12, 10);
 		break;
 	case Cube:
-		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5));
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
 		glutSolidCube(1);
 		break;
 	case Teapot:
-		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5));
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
 		glutSolidTeapot(1);
 		break;
 	case Cone:
-		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5));
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
 		glutSolidCone(1,1,12,10);
 		break;
 	case Cylinder:
 		//TRANSFORM THIS INTO A CYLINDER
 		//TODO*****************************************************
-		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5));
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
 		glutSolidCone(1,1,12,10);
 		break;
 	case Torus:
-		hit = Hitbox(vertex3D(-0.5,-0.5,-0.25), vertex3D(0.5,0.5,0.25));
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.25), vertex3D(0.5,0.5,0.25), ID);
 		glutSolidTorus(0.5,1,12,12);
 		break;
 	case Tetrahedron:
-		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5));
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
 		glutSolidTetrahedron();
 		break;
 	case Dodecahedron:
-		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5));
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
 		glutSolidDodecahedron();
 		break;
 	case Icosahedron:
-		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5));
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
 		glutSolidIcosahedron();
 		break;
 	case Custom:

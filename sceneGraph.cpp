@@ -64,6 +64,15 @@ void SceneGraph::insertChildNodeHere(Node *node){
 	//now lets add it to our children!
 	currentNode->children->push_back(node);
 	//Switch to the new current node
+	if(node->nodeType == model)
+	{	
+		hitBoxNodes.push_back(node);
+		for(int i = 0; i < hitBoxNodes.size(); i++)
+		{
+			hitBoxNodes.at(i)->current = false;
+		}
+		hitBoxNodes.at(hitBoxNodes.size()-1)->current = true;
+	}
 	currentNode = node;
 }
 
@@ -77,33 +86,6 @@ void SceneGraph::deleteThisNode()
 	SceneGraph::goToParent();
 	currentNode->children->clear();
 
-	/*Node *tmpNode = currentNode;
-	SceneGraph::goToParent();
-	//Link children to grandparent
-
-	//Now we need to link nodes below it to the new node
-	for(int i = 0; i < currentNode->children->size(); i++)
-	{
-		tmpNode->children->push_back(SG->currentNode->children->at(i));
-		//The current node also needs to have it's old nodes removed
-	}
-
-	//The only node the currentNode should have is the the new node
-	
-	SG->currentNode->children->clear();
-
-
-	/*
-	while(currentNode->nodeType != group)
-	{
-		SceneGraph::goToParent();			//switch to parent node
-		currentNode->children->clear();		//Remove child nodes
-		//Continue to do this in a loop till we reach the group node
-		//which is the top node
-	}*/
-
-	
-	//delete this;
 }
 
 //draw the scenegraph
@@ -142,7 +124,9 @@ void SceneGraph::searchByID(int ID)
 }
 
 
-bool SceneGraph::Intersect(int x, int y,Hitbox* hit){
+bool SceneGraph::Intersect(int x, int y){
+
+	Node *currentNodeIntersect = rootNode;
 
 	//grab the matricies
 	glGetDoublev(GL_MODELVIEW_MATRIX, matModelView); 
@@ -168,20 +152,37 @@ bool SceneGraph::Intersect(int x, int y,Hitbox* hit){
 	far.update(finish);
 	distance = (far - near).normalize();
 
-	// check if sphere or box hitbox
+	int ID_tmp;
+	for(int i = 0; i < hitBoxNodes.size(); i++)
+	{
+		ID_tmp = hitBoxNodes.at(i)->hit.Intersect(near,distance);
+		if(ID_tmp != -1)
+		{
+			for(int j = 0; j < hitBoxNodes.size(); j++)
+			{
+				hitBoxNodes.at(j)->current = false;
+			}
+			printf("ID FOUND\n");
+			hitBoxNodes.at(i)->current = true;
+			currentNode = hitBoxNodes.at(i);
+		}
+	}
+
+	/* check if sphere or box hitbox
 	if (hit->Intersect(near,distance)){
 		printf("hit\n");
 	}else {
 		printf("miss\n");
-	}
+	}*/
 
-	vec3D Ray = vec3D(distance.dot(distance),near.dot(distance)*2.0,near.dot(near) - 1);
+	/*vec3D Ray = vec3D(distance.dot(distance),near.dot(distance)*2.0,near.dot(near) - 1);
 	
 	if (hit->IntersectSphere(Ray)){
 		printf("hit\n");
+
 	}else {
 		printf("miss\n");
-	}
+	}*/
 
 	return false;
 

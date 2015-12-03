@@ -173,7 +173,7 @@ Hitbox::Hitbox(){
 
 }
 
-Hitbox::Hitbox(vertex3D low, vertex3D high){
+Hitbox::Hitbox(vertex3D low, vertex3D high, int ID){
 	vertex3D v1 = vertex3D(low.x,low.y,high.z);
 	vertex3D v2 = vertex3D(high.x,low.y,high.z);
 	vertex3D v3 = vertex3D(high.x,high.y,high.z);
@@ -192,6 +192,7 @@ Hitbox::Hitbox(vertex3D low, vertex3D high){
 	minP = vertex3D(low.x,low.y,low.z);
 	maxP = vertex3D(high.x,high.y,high.z);
 
+	this->ID = ID;
 }
 
 void Hitbox::draw(){
@@ -200,7 +201,7 @@ void Hitbox::draw(){
 	}
 }
 
-bool Hitbox::Intersect(vec3D v0,vec3D vD){
+int Hitbox::Intersect(vec3D v0,vec3D vD){
 	float *tNear;
 	float *tFar;
 	float nearVal,farVal;
@@ -210,13 +211,13 @@ bool Hitbox::Intersect(vec3D v0,vec3D vD){
 	tNear = &nearVal;
 	for (int i =0 ; i <Planes.size(); i++){
 		if (!Planes[i]->Intersect(v0,vD,tNear,tFar,minP,maxP)){
-			return false;
+			return -1;
 		}
 	}
-	return true;
+	return this->ID;
 }
 
-bool Hitbox::IntersectSphere(vec3D Ray){
+int Hitbox::IntersectSphere(vec3D Ray){
 	double sq = Ray.y*Ray.y  - 4*Ray.x*Ray.z;
 
 	double t0 = 0, t1 = 0;
@@ -228,12 +229,12 @@ bool Hitbox::IntersectSphere(vec3D Ray){
 		t1 = ((-1) * Ray.y - sqrt(sq))/(2*Ray.x);
 
 		printf("Intersection at: t = %f, and t = %f\n", t0, t1);
-		return true;
+		return ID;
 	}
-	return false;
+	return -1;
 }
 
-void Hitbox::scale(vec3D transform){
+void Hitbox::Scale(vec3D transform){
 	for (int i = 0; i < Planes.size(); i++){
 		Planes[i]->scale(transform);
 	}

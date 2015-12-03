@@ -17,6 +17,7 @@
 #include <cmath>
 
 #include "Math/Hitbox.h"
+#include "Math/math3D.h"
 
 enum ModelType{
 	Sphere,
@@ -47,6 +48,10 @@ public:
 
 	bool current;
 	Hitbox hit;
+
+	vec3D tr;
+	vec3D sc;
+	quaternion rot;
 
 	//Bounding box information is already specified in the math library
 

@@ -2,8 +2,10 @@
 #define __SCENEGRAPH_H__
 
 #include "node.h"
+#include "nodeModel.h"
 #include "Math/math3D.h"
 #include "Math/Hitbox.h"
+#include <vector>
 
 class SceneGraph{
 public:
@@ -16,7 +18,7 @@ public:
 	void insertChildNodeHere(Node *node);
 	void deleteThisNode();
 	void searchByID(int ID);
-	bool Intersect(int x, int y,Hitbox* hit);
+	bool Intersect(int x, int y);
 
 	//Scene Graph Draw
 	void draw();
@@ -29,6 +31,7 @@ public:
 	double* start;
 	double* finish;
 	Node *currentNode;
+	vector<Node*> hitBoxNodes;
 
 private:
 	

@@ -23,17 +23,18 @@ public:
 class Hitbox{
 public:
 	Hitbox();
-	Hitbox(vertex3D low, vertex3D high);
+	Hitbox(vertex3D low, vertex3D high, int ID);
 	void draw();
-	bool Intersect(vec3D v0,vec3D vD);
-	bool IntersectSphere(vec3D Ray);
+	int Intersect(vec3D v0,vec3D vD);
+	int IntersectSphere(vec3D Ray);
 	
-	void scale(vec3D transform);
+	void Scale(vec3D transform);
 	void Translate(vec3D transform);
 	void Rotate(quaternion quat);
 
 	vertex3D minP,maxP;
 	vector<Plane*> Planes;
+	int ID;
 };
 
 
