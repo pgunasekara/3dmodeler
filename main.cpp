@@ -536,10 +536,10 @@ void display(void)
 
 void passive(int x,int y){
 	if ((x - mouseX) > 0){
-    	camera.Spin(SRIGHT,angle);
+		camera.Spin(SRIGHT,angle);
 	}
 	else if ((x - mouseX) < 0){ 
-    	camera.Spin(SLEFT,angle);
+		camera.Spin(SLEFT,angle);
 	}
 	if ((y - mouseY) > 0){
 		camera.Spin(SDOWN,angle);
@@ -556,7 +556,7 @@ int main(int argc, char** argv)
 	
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	
-	//initLighting();
+	initLighting();
 
 	init();
 	
