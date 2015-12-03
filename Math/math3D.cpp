@@ -145,6 +145,12 @@ void vertex3D::movePoint(vec3D v){
 	z += v.z;
 }
 
+void vertex3D::scalePoint(vec3D v){
+	x *= v.x;
+	y *= v.y;
+	z *= v.z;
+}
+
 // returns pointer to array with components of vertex
 float* vertex3D::returnArray(){
 	float *vert = new float[3];

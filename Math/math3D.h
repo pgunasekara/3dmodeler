@@ -60,6 +60,8 @@ public:
 	float fastDistanceFrom(vertex3D p);
 	// moves point along vector
 	void movePoint(vec3D v);
+	// scale point by vector
+	void scalePoint(vec3D v);
 	// returns the vertex components as a pointer to a float array of size 3
 	float* returnArray();
 	// return vertex components as pointer to double array

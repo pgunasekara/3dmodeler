@@ -134,8 +134,12 @@ bool Plane::Intersect(vec3D v0,vec3D vD, float* tNear, float* tFar, vertex3D min
 }
 
 
-void Plane::scale(vec3D transform){
-	
+void Plane::Scale(vec3D transform){
+	a.scalePoint(transform);
+	b.scalePoint(transform);
+	c.scalePoint(transform);
+	d.scalePoint(transform);
+	norm = norm * transform;
 
 }
 void Plane::Translate(vec3D transform){
@@ -236,7 +240,7 @@ int Hitbox::IntersectSphere(vec3D Ray){
 
 void Hitbox::Scale(vec3D transform){
 	for (int i = 0; i < Planes.size(); i++){
-		Planes[i]->scale(transform);
+		Planes[i]->Scale(transform);
 	}
 }
 
