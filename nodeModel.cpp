@@ -11,6 +11,8 @@
 #  include <GL/freeglut.h>
 #endif
 
+#include "Math/math3D.h"
+
 
 NodeModel::NodeModel(ModelType whatType){	//constructor
 	nodeType = model;
@@ -37,32 +39,41 @@ NodeModel::NodeModel(ModelType whatType){	//constructor
 void NodeModel::nodeSpecificCodeDown(){
 	switch (modelType){
 	case Sphere:
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5));
 		glutSolidSphere(1, 12, 10);
 		break;
 	case Cube:
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5));
 		glutSolidCube(1);
 		break;
 	case Teapot:
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5));
 		glutSolidTeapot(1);
 		break;
 	case Cone:
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5));
 		glutSolidCone(1,1,12,10);
 		break;
 	case Cylinder:
 		//TRANSFORM THIS INTO A CYLINDER
 		//TODO*****************************************************
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5));
 		glutSolidCone(1,1,12,10);
 		break;
 	case Torus:
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.25), vertex3D(0.5,0.5,0.25));
 		glutSolidTorus(0.5,1,12,12);
 		break;
 	case Tetrahedron:
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5));
 		glutSolidTetrahedron();
 		break;
 	case Dodecahedron:
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5));
 		glutSolidDodecahedron();
 		break;
 	case Icosahedron:
+		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5));
 		glutSolidIcosahedron();
 		break;
 	case Custom:

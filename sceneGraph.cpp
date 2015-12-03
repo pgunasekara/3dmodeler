@@ -18,6 +18,8 @@
 SceneGraph::SceneGraph(){
 	rootNode = new Node();
 	currentNode = rootNode;
+
+	currentNode->current = true;
 	printf("scene graph init done\n");
 	// R0
 	vec3D near = vec3D();
@@ -33,7 +35,8 @@ void SceneGraph::goToRoot(){
 }
 
 //moves to a child node i
-void SceneGraph::goToChild(int i){
+void SceneGraph::goToChild(int i)
+{
 	if (i < currentNode->children->size() && i >= 0)
 		currentNode = currentNode->children->at(i);
 	else

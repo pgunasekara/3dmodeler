@@ -45,6 +45,7 @@ public:
 	Vector3D position, rotation, scale;
 	Materials currentMat;
 
+	bool current;
 	Hitbox hit;
 
 	//Bounding box information is already specified in the math library

@@ -30,7 +30,8 @@ public:
 	vector<Node*> *children;
 	Node* parent;
 	int currentChild;
-
+	bool current;
+	
 	void draw();
 	virtual void nodeSpecificCodeDown();
 	virtual void nodeSpecificCodeUp();
