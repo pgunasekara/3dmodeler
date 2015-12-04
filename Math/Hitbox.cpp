@@ -242,6 +242,8 @@ void Hitbox::Scale(vec3D transform){
 	for (int i = 0; i < Planes.size(); i++){
 		Planes[i]->Scale(transform);
 	}
+	minP.scalePoint(transform);
+	maxP.scalePoint(transform);
 }
 
 void Hitbox::Translate(vec3D transform){
