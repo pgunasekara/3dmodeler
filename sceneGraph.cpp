@@ -165,6 +165,8 @@ bool SceneGraph::Intersect(int x, int y){
 			printf("ID FOUND\n");
 			hitBoxNodes.at(i)->current = true;
 			currentNode = hitBoxNodes.at(i);
+		}else {
+			printf("miss\n");
 		}
 	}
 

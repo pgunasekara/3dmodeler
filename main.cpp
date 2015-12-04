@@ -464,7 +464,7 @@ void keyboard(unsigned char key, int x, int y)
 				}
 			}
 
-			SG->hitBoxNodes.at(count)->hit.Scale(vec3D(translation.x, translation.y, translation.z));
+			SG->hitBoxNodes.at(count)->hit.Scale(vec3D(scale.x, scale.y, scale.z));
 
 
 			//Now we need to link nodes below it to the new node

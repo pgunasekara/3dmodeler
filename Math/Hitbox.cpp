@@ -148,7 +148,6 @@ void Plane::Translate(vec3D transform){
 	c.movePoint(transform);
 	d.movePoint(transform);
 	norm = norm + transform;
-	
 }
 
 void Plane::Rotate(quaternion quat){
@@ -242,8 +241,12 @@ void Hitbox::Scale(vec3D transform){
 	for (int i = 0; i < Planes.size(); i++){
 		Planes[i]->Scale(transform);
 	}
+	printf("min: %f %f %f\n",minP.x,minP.y,minP.z);
+	printf("min: %f %f %f\n",maxP.x,maxP.y,maxP.z);
 	minP.scalePoint(transform);
 	maxP.scalePoint(transform);
+	printf("min: %f %f %f\n",minP.x,minP.y,minP.z);
+	printf("min: %f %f %f\n",maxP.x,maxP.y,maxP.z);
 }
 
 void Hitbox::Translate(vec3D transform){
