@@ -151,6 +151,12 @@ void vertex3D::scalePoint(vec3D v){
 	z *= v.z;
 }
 
+void vertex3D::rotatePoint(float* matrix){
+	x = matrix[0]*x + matrix[1]*y + matrix[2]*z + matrix[3];
+	y = matrix[4]*x + matrix[5]*y + matrix[6]*z + matrix[7];
+	z = matrix[8]*x + matrix[9]*y + matrix[10]*z + matrix[11];
+}
+
 // returns pointer to array with components of vertex
 float* vertex3D::returnArray(){
 	float *vert = new float[3];

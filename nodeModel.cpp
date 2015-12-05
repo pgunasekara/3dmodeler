@@ -31,6 +31,10 @@ NodeModel::NodeModel(ModelType whatType){	//constructor
 	scale.y = 1.0f;
 	scale.z = 1.0f;
 
+	xaxis = vec3D(1,0,0);
+	yaxis = vec3D(0,1,0);
+	zaxis = vec3D(0,0,1);
+
 	currentMat = mat1;
 }
 
@@ -81,3 +85,10 @@ void NodeModel::nodeSpecificCodeDown(){
 		break;
 	}
 }
+/*
+void NodeModel::applyChangesAxes(vec3D transform){
+	xaxis = (xaxis + transform).normalize();
+	yaxis = (yaxis + transform).normalize();
+	zaxis = (zaxis + transform).normalize();
+};
+*/

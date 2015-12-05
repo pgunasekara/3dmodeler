@@ -55,9 +55,6 @@ public:
 
 	//Bounding box information is already specified in the math library
 
-
-
-
 	virtual void nodeSpecificCodeDown();
 };
 

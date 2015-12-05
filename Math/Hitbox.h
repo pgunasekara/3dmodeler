@@ -13,7 +13,7 @@ public:
 	bool Intersect(vec3D v0,vec3D vD, float* tNear, float* tFar,vertex3D minP, vertex3D maxP);
 	void Scale(vec3D transform);
 	void Translate(vec3D transform);
-	void Rotate(quaternion quat);
+	void Rotate(quaternion transform);
 
 	vertex3D a,b,c,d;
 	vec3D norm;
@@ -27,12 +27,14 @@ public:
 	void draw();
 	int Intersect(vec3D v0,vec3D vD);
 	int IntersectSphere(vec3D Ray);
+	void applyAxesChanges(vec3D transform);
 	
 	void Scale(vec3D transform);
 	void Translate(vec3D transform);
-	void Rotate(quaternion quat);
+	void Rotate(quaternion transform);
 
 	vertex3D minP,maxP;
+	vec3D xaxis,yaxis,zaxis;
 	vector<Plane*> Planes;
 	int ID;
 };

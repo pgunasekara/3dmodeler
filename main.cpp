@@ -44,7 +44,7 @@ int masterID = 0;
 
 Vector3D ip;
 Vector3D translation;
-Vector4D rotation;
+Vector4D rotation; 
 Vector3D scale;
 
 int getID()
@@ -580,6 +580,157 @@ void keyboard(unsigned char key, int x, int y)
 			break;
 		}
 		//------------------SCALE---------------------//
+		//-----------------ROTATE---------------------//
+		case 'i':
+		{
+			//Modify Transformation Node
+			//Node *tempCurrentNode = SG->currentNode;
+			
+			while(SG->currentNode->nodeType == model)
+				SG->goToParent();
+
+			int mod = glutGetModifiers();
+			
+			if(mod == GLUT_ACTIVE_ALT)
+				rotation.w = 1.0;
+			else
+				rotation.w = -1.0;
+			
+			rotation.x = 1.0;
+			rotation.y = 0.0;
+			rotation.z = 0.0;
+
+			NodeTransform *tempNode = new NodeTransform(Rotate, rotation);
+
+			int count;
+			for(count = 0; count < SG->hitBoxNodes.size(); count++)
+			{
+				if(SG->hitBoxNodes.at(count)->current == true)
+				{
+					break;
+				}
+			}
+
+			SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
+
+
+			//Now we need to link nodes below it to the new node
+			for(int i = 0; i < SG->currentNode->children->size(); i++)
+			{
+				tempNode->children->push_back(SG->currentNode->children->at(i));
+				//The current node also needs to have it's old nodes removed
+			}
+
+			//The only node the currentNode should have is the the new node
+			
+			SG->currentNode->children->clear();
+
+			SG->insertChildNodeHere(new NodeGroup());
+			SG->insertChildNodeHere(tempNode);
+			SG->draw();
+			//SG->currentNode = tempCurrentNode;
+
+			break;
+		}
+
+		case 'o':
+		{
+			//Modify Transformation Node
+			while(SG->currentNode->nodeType == model)
+				SG->goToParent();
+
+			int mod = glutGetModifiers();
+
+			if(mod == GLUT_ACTIVE_ALT)
+				rotation.w = 1.0;
+			else
+				rotation.w = -1.0;
+			
+			rotation.x = 0.0;
+			rotation.y = 1.0;
+			rotation.z = 0.0;
+
+			NodeTransform *tempNode = new NodeTransform(Rotate, rotation);
+			
+			int count;
+			for(count = 0; count < SG->hitBoxNodes.size(); count++)
+			{
+				if(SG->hitBoxNodes.at(count)->current == true)
+				{
+					break;
+				}
+			}
+
+			SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
+
+
+
+			//Now we need to link nodes below it to the new node
+			for(int i = 0; i < SG->currentNode->children->size(); i++)
+			{
+				tempNode->children->push_back(SG->currentNode->children->at(i));
+				//The current node also needs to have it's old nodes removed
+			}
+
+			//The only node the currentNode should have is the the new node
+			
+			SG->currentNode->children->clear();
+
+			SG->insertChildNodeHere(new NodeGroup());
+			SG->insertChildNodeHere(tempNode);
+			SG->draw();
+			break;
+		}
+
+		case 'p':
+		{
+			Node *tempCurrentNode;
+			//Modify Transformation Node
+			while(SG->currentNode->nodeType == model)
+				SG->goToParent();
+
+			int mod = glutGetModifiers();
+
+			if(mod == GLUT_ACTIVE_ALT)
+				rotation.w = 1.0;
+			else
+				rotation.w = -1.0;
+			
+			rotation.x = 0.0;
+			rotation.y = 0.0;
+			rotation.z = 1.0;
+
+			NodeTransform *tempNode = new NodeTransform(Rotate, rotation);
+			
+			int count;
+			for(count = 0; count < SG->hitBoxNodes.size(); count++)
+			{
+				if(SG->hitBoxNodes.at(count)->current == true)
+				{
+					break;
+				}
+			}
+
+			SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
+
+			//Now we need to link nodes below it to the new node
+			for(int i = 0; i < SG->currentNode->children->size(); i++)
+			{
+				tempNode->children->push_back(SG->currentNode->children->at(i));
+				//The current node also needs to have it's old nodes removed
+			}
+
+			//The only node the currentNode should have is the the new node
+			
+			SG->currentNode->children->clear();
+
+			SG->insertChildNodeHere(new NodeGroup());
+			SG->insertChildNodeHere(tempNode);
+			SG->draw();
+			break;
+		}
+		//------------------SCALE---------------------//
+
 
 		case 'j':
 			//delete the current Node

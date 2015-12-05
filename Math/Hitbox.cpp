@@ -150,8 +150,12 @@ void Plane::Translate(vec3D transform){
 	norm = norm + transform;
 }
 
-void Plane::Rotate(quaternion quat){
-
+void Plane::Rotate(quaternion transform){
+	a.rotatePoint(transform.rotationMatrix);
+	b.rotatePoint(transform.rotationMatrix);
+	c.rotatePoint(transform.rotationMatrix);
+	d.rotatePoint(transform.rotationMatrix);
+	norm.applyMatrix(transform.rotationMatrix);
 }
 
 
@@ -174,6 +178,9 @@ Hitbox::Hitbox(){
 	minP = vertex3D(-0.5,-0.5,-0.5);
 	maxP = vertex3D(0.5,0.5,0.5);
 
+	xaxis = vec3D(1,0,0);
+	yaxis = vec3D(0,1,0);
+	zaxis = vec3D(0,0,1);
 }
 
 Hitbox::Hitbox(vertex3D low, vertex3D high, int ID){
@@ -196,6 +203,9 @@ Hitbox::Hitbox(vertex3D low, vertex3D high, int ID){
 	maxP = vertex3D(high.x,high.y,high.z);
 
 	this->ID = ID;
+	xaxis = vec3D(1,0,0);
+	yaxis = vec3D(0,1,0);
+	zaxis = vec3D(0,0,1);
 }
 
 void Hitbox::draw(){
@@ -241,12 +251,8 @@ void Hitbox::Scale(vec3D transform){
 	for (int i = 0; i < Planes.size(); i++){
 		Planes[i]->Scale(transform);
 	}
-	printf("min: %f %f %f\n",minP.x,minP.y,minP.z);
-	printf("min: %f %f %f\n",maxP.x,maxP.y,maxP.z);
 	minP.scalePoint(transform);
 	maxP.scalePoint(transform);
-	printf("min: %f %f %f\n",minP.x,minP.y,minP.z);
-	printf("min: %f %f %f\n",maxP.x,maxP.y,maxP.z);
 }
 
 void Hitbox::Translate(vec3D transform){
@@ -258,9 +264,16 @@ void Hitbox::Translate(vec3D transform){
 }
 
 void Hitbox::Rotate(quaternion quat){
+	quat.updateRotationMatrix();
 	for (int i = 0; i < Planes.size(); i++){
 		Planes[i]->Rotate(quat);
 	}
+	minP.rotatePoint(quat.rotationMatrix);
+	maxP.rotatePoint(quat.rotationMatrix);
+}
+
+void applyAxesChanges(vec3D transform){
+	// implement maybe ??
 }
 
 

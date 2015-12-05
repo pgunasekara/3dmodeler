@@ -62,6 +62,8 @@ public:
 	void movePoint(vec3D v);
 	// scale point by vector
 	void scalePoint(vec3D v);
+	// rotate point by quaternion
+	void rotatePoint(float* matrix);
 	// returns the vertex components as a pointer to a float array of size 3
 	float* returnArray();
 	// return vertex components as pointer to double array

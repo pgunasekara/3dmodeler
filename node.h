@@ -38,10 +38,12 @@ public:
 	vec3D tr;
 	vec3D sc;
 	quaternion rot;
+	vec3D xaxis,yaxis,zaxis;
 
 	void draw();
 	virtual void nodeSpecificCodeDown();
 	virtual void nodeSpecificCodeUp();
+	//virtual void applyChangesAxes(vec3D transform);
 };
 
 #endif
