@@ -23,10 +23,13 @@ Then switch current node based on the ID*/
 #include "structs.h"
 #include "Math/math3D.h"
 
+//#include "node.h"
+#include "materials.h"
 //sceneGraph
 #include "sceneGraph.h"
 #include "nodeGroup.h"
 #include "nodeModel.h"
+
 #include "nodeTransform.h"
 #include <vector>
 #include <fstream>
@@ -835,6 +838,15 @@ void keyboard(unsigned char key, int x, int y)
 		case 's':
 			printf("saved\n");
 			saveState();
+			break;
+
+
+		//CHANGE THE MATERIAL
+		case '[':
+			if(SG->currentNode->nodeType == model)
+			{
+				SG->currentNode->currentMat.toRuby();
+			}
 			break;
 	}
 	glutPostRedisplay();

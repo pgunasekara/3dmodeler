@@ -128,20 +128,6 @@ void SceneGraph::searchByID(int ID)
 }
 
 
-void SceneGraph::save()
-{
-	//First save the ID of the current Node to move back to it
-	int id_tmp = currentNode.ID;
-	//Save all the nodes
-
-}
-
-void SceneGraph::load(char **filename)
-{
-
-}
-
-
 bool SceneGraph::Intersect(int x, int y){
 
 	Node *currentNodeIntersect = rootNode;

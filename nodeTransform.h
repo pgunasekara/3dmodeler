@@ -12,9 +12,8 @@ public:
 	NodeTransform(transformType whatType, Vector3D vec3);	//constructor
 	NodeTransform(transformType whatType, Vector4D vec4);
 
-	transformType transformationType;
-	Vector3D amount3;
-	Vector4D amount4;
+	
+	
 	std::string type;
 	virtual void nodeSpecificCodeDown();
 };
