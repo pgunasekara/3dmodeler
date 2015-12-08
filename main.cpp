@@ -76,6 +76,7 @@ void mouse(int button, int state, int x, int y){
 	if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN){
 		SG->Intersect(x,y);
 	}
+	glutPostRedisplay();
 }
 
 void initLighting()
@@ -160,6 +161,10 @@ void keyboard(unsigned char key, int x, int y)
 		case 'z':
 			//CUBE
 			//Go to the top group node
+			if(SG->currentNode->nodeType == model)
+			{
+				SG->currentNode->current = false;
+			}
 			while(SG->currentNode->ID > 1)
 			{
 				SG->goToParent();
@@ -190,7 +195,8 @@ void keyboard(unsigned char key, int x, int y)
 			SG->insertChildNodeHere(new NodeTransform(Translate, ip));
 			
 			SG->insertChildNodeHere(new NodeModel(Sphere));
-			hit = new Hitbox();
+			SG->currentNode->current = true;
+			//hit = new Hitbox();
 			break;
 
 			//hit = new Hitbox();
@@ -246,23 +252,6 @@ void keyboard(unsigned char key, int x, int y)
 			SG->insertChildNodeHere(new NodeModel(Torus));
 			hit = new Hitbox();
 			break;
-		case 'n':
-			//TEAPOT
-			//Go to the top group node
-			while(SG->currentNode->ID > 1)
-			{
-				SG->goToParent();
-			}
-			
-			//Create new transformation Node
-			ip.x = 0;
-			ip.y = 0;
-			ip.z = 0;
-			SG->insertChildNodeHere(new NodeTransform(Translate, ip));
-			
-			SG->insertChildNodeHere(new NodeModel(Teapot));
-			hit = new Hitbox();
-			break;
 		case 'm':
 			//CUBE
 			//Go to the top group node
@@ -316,7 +305,7 @@ void keyboard(unsigned char key, int x, int y)
 			SG->hitBoxNodes.at(count)->hit.Translate(vec3D(translation.x, translation.y, translation.z));
 
 
-			//Now we need to link nodes below it to the new node
+			//qNow we need to link nodes below it to the new node
 			for(int i = 0; i < SG->currentNode->children->size(); i++)
 			{
 				tempNode->children->push_back(SG->currentNode->children->at(i));
@@ -822,25 +811,31 @@ void display(void)
 	//draw the sceneGraph
 	drawAxis();
 	SG->draw();
-	if (PlaneExist){
-		hit->draw();
-	}
+	//if (PlaneExist){
+	//	hit->draw();
+	//}
 
 	glutSwapBuffers();
 }
 
 void passive(int x,int y){
-	if ((x - mouseX) > 0){
-		camera.Spin(SRIGHT,angle);
+	if (x < globalW && y < globalH){
+		if ((x - mouseX) > 0){
+			camera.Spin(SRIGHT,(x - mouseX)/globalW);
+			mouseX = x;
+		}
+		else if ((x - mouseX) < 0){ 
+			camera.Spin(SLEFT,-1*(x - mouseX)/globalW);
+			mouseX = x;
+		}
+		if ((y - mouseY) > 0){
+			camera.Spin(SDOWN,(y - mouseY)/globalH);
+			mouseY = y;
+		}else if ((y - mouseY) < 0){
+			camera.Spin(SUP,-1*(y - mouseY)/globalH);
+			mouseY = y;
+		} 
 	}
-	else if ((x - mouseX) < 0){ 
-		camera.Spin(SLEFT,angle);
-	}
-	if ((y - mouseY) > 0){
-		camera.Spin(SDOWN,angle);
-	}else if ((y - mouseY) < 0){
-		camera.Spin(SUP,angle);
-	} 
 	glutPostRedisplay();
 }
 
@@ -865,7 +860,7 @@ int main(int argc, char** argv)
 	glutMouseFunc(mouse);
 	glutMotionFunc(passive);
 
-	initLighting();
+	//initLighting();
 
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);

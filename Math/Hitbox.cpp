@@ -18,6 +18,10 @@ Plane::Plane(){
 	b = vertex3D(0.5,-0.5,0.5);
 	c = vertex3D(0.5,0.5,0.5);
 	d = vertex3D(-0.5,0.5,0.5);
+	dA = vertex3D(-0.5,-0.5,0.5);
+	dB = vertex3D(0.5,-0.5,0.5);
+	dC = vertex3D(0.5,0.5,0.5);
+	dD = vertex3D(-0.5,0.5,0.5);
 	xPlane = true;
 	yPlane = false;
 	zPlane = false;
@@ -28,6 +32,10 @@ Plane::Plane(vertex3D a, vertex3D b, vertex3D c, vertex3D d,bool xPlane, bool yP
 	this->b = b;
 	this->c = c;
 	this->d = d;
+	dA = a;
+	dB = b;
+	dC = c;
+	dD = d;
 	vec3D v1 = vec3D(a,d);
 	vec3D v2 = vec3D(a,b);
 	this->xPlane = xPlane;
@@ -39,11 +47,13 @@ Plane::Plane(vertex3D a, vertex3D b, vertex3D c, vertex3D d,bool xPlane, bool yP
 
 void Plane::draw(){
 	glBegin(GL_LINE_LOOP);
-			glColor3f(1.0f,0.0f,0.0f);
-		    glVertex3dv(a.returnDoubleArray());
-		    glVertex3dv(b.returnDoubleArray());
-		    glVertex3dv(c.returnDoubleArray());
-		    glVertex3dv(d.returnDoubleArray());
+			glColor3f(1.0f,1.0f,0.0f);
+		    glVertex3dv(dA.returnDoubleArray());
+		    glVertex3dv(dB.returnDoubleArray());
+		    glVertex3dv(dC.returnDoubleArray());
+		    glVertex3dv(dD.returnDoubleArray());
+		    //printf("%f %f %f",dA.returnDoubleArray().x,dA.returnDoubleArray().y,dA.returnDoubleArray().z);
+		    //
 	glEnd();
 }
 //FIX THIS FJSDOAIJFDSIOAJFISDO

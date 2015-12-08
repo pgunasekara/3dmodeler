@@ -30,7 +30,7 @@ Camera::Camera(){
 	//light_position = vec3D(0,0,0);
 	//spot_direction = vec3D(camera_look_at - camera_position);
 
-	camera_scale = 0.1f;
+	camera_scale = 1.0f;
 	camera_pitch = 0.0;
 	camera_heading = 0.0;
 	rotate_camera = false;

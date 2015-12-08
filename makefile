@@ -6,7 +6,7 @@
 #changing platform dependant stuff, do not change this
 # Linux (default)
 LDFLAGS = -lGL -lGLU -lglut
-CFLAGS=-g -Wall -std=c++11
+CFLAGS=-g -std=c++11 -w
 CC=g++
 EXEEXT=
 RM=rm

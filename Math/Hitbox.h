@@ -15,7 +15,7 @@ public:
 	void Translate(vec3D transform);
 	void Rotate(quaternion transform);
 
-	vertex3D a,b,c,d;
+	vertex3D a,b,c,d,dA,dB,dC,dD;
 	vec3D norm;
 	bool xPlane,yPlane,zPlane;
 };

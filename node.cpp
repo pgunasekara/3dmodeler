@@ -1,6 +1,15 @@
 #include "node.h"
 #include <stdio.h>
 #include "structs.h"
+#ifdef __APPLE__
+#  include <OpenGL/gl.h>
+#  include <OpenGL/glu.h>
+#  include <GLUT/glut.h>
+#else
+#  include <GL/gl.h>
+#  include <GL/glu.h>
+#  include <GL/freeglut.h>
+#endif
 
 Node::Node(){	//constructor
 	ID = getID();
@@ -24,7 +33,11 @@ void Node::draw(){
 	const int numberOfChildren = children->size();
 	if (numberOfChildren > 0){
 		for (int i = 0; i < numberOfChildren; i++){
+			glColor3f(0,0,1);
 			children->at(i)->draw();
+			if (children->at(i)->current && children->at(i)->nodeType == model){	
+				children->at(i)->hit.draw();
+			}
 		}
 	}
 

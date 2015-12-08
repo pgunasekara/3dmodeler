@@ -34,6 +34,7 @@ NodeModel::NodeModel(ModelType whatType){	//constructor
 	xaxis = vec3D(1,0,0);
 	yaxis = vec3D(0,1,0);
 	zaxis = vec3D(0,0,1);
+	//current = true;
 
 	currentMat = mat1;
 }
@@ -44,15 +45,14 @@ void NodeModel::nodeSpecificCodeDown(){
 	switch (modelType){
 	case Sphere:
 		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
-		glutSolidSphere(1, 12, 10);
+		glutSolidSphere(0.7, 12, 10);
 		break;
 	case Cube:
 		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
 		glutSolidCube(1);
-		break;
-	case Teapot:
-		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
-		glutSolidTeapot(1);
+		/*if (current){	
+			hit.draw();
+		}*/
 		break;
 	case Cone:
 		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
@@ -65,8 +65,8 @@ void NodeModel::nodeSpecificCodeDown(){
 		glutSolidCone(1,1,12,10);
 		break;
 	case Torus:
-		hit = Hitbox(vertex3D(-0.5,-0.5,-0.25), vertex3D(0.5,0.5,0.25), ID);
-		glutSolidTorus(0.5,1,12,12);
+		hit = Hitbox(vertex3D(-0.8,-0.8,-0.5), vertex3D(0.8,0.8,0.5), ID);
+		glutSolidTorus(0.25,0.5,12,12);
 		break;
 	case Tetrahedron:
 		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
