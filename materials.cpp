@@ -2,13 +2,17 @@
 
 cMaterial::cMaterial()
 {
-	emerald = {
+	/*emerald = {
 		{0.0215, 0.1745, 0.0215, 1.0},
 		{0.07568, 0.61424, 0.07568, 1.0},
 		{0.633, 0.727811, 0.633, 1.0},
 		{0.0,0.0,0.0,0.0},
 		0.6
-	};
+	};*/
+	emerald.ambient[0] =0.0215;
+	emerald.ambient[1] = 0.1745;
+	emerald.ambient[2] = 0.0215;
+	emerald.ambient[3] = 1.0;
 
 	blackRubber = {
 		{0.0,0.0,0.0},
