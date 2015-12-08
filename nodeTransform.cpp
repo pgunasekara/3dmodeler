@@ -1,5 +1,6 @@
 #include "nodeTransform.h"
 #include <stdio.h> //needed for printf command
+#include <string>
 #ifdef __APPLE__
 #  include <OpenGL/gl.h>
 #  include <OpenGL/glu.h>

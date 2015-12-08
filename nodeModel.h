@@ -19,15 +19,26 @@
 #include "Math/Hitbox.h"
 #include "Math/math3D.h"
 
-enum Materials
-{
-	mat1, mat2, mat3, mat4, mat5
+enum ModelType{
+	Sphere,
+	Cube,
+	Cone,
+	Cylinder,
+	Torus,
+	Teapot,
+	Tetrahedron,
+	Octahedron,
+	Dodecahedron,
+	Icosahedron,
+	Custom
 };
+
+
 
 class NodeModel:public Node{
 public:
 	NodeModel(ModelType whatType);	//constructor
-	//ModelType modelType;
+	ModelType modelType;
 
 	Vector3D position, rotation, scale;
 	Materials currentMat;

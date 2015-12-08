@@ -14,6 +14,7 @@
 #include "Math/math3D.h"
 
 
+
 NodeModel::NodeModel(ModelType whatType){	//constructor
 	nodeType = model;
 	modelType = whatType;
@@ -36,7 +37,7 @@ NodeModel::NodeModel(ModelType whatType){	//constructor
 	zaxis = vec3D(0,0,1);
 	//current = true;
 
-	currentMat = mat1;
+	currentMat = obsidian;
 }
 
 //as the node moves down through it, we want to perform down action

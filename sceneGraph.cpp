@@ -8,6 +8,8 @@
 #  include <GL/freeglut.h>
 #endif
 
+#include <fstream>
+
 #include "sceneGraph.h"
 #include "node.h"
 #include "Math/math3D.h"
@@ -42,6 +44,8 @@ void SceneGraph::goToChild(int i)
 	else
 		printf("child out of range");
 }
+
+
 
 void SceneGraph::goToParent(){
 	if (currentNode->parent != 0)
@@ -121,6 +125,20 @@ void SceneGraph::searchByID(int ID)
 			}
 		}
 	}
+}
+
+
+void SceneGraph::save()
+{
+	//First save the ID of the current Node to move back to it
+	int id_tmp = currentNode.ID;
+	//Save all the nodes
+
+}
+
+void SceneGraph::load(char **filename)
+{
+
 }
 
 
