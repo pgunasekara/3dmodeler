@@ -148,14 +148,24 @@ void recursiveSave(Node *n){
 		// put materials once pasi gets it
 		//myfile << 
 		myfile << "\t}\n";
-
-
 	}
 	for (int i = 0; i < n->children->size(); i++){
 		recursiveSave(n->children->at(i));
 	}
 		myfile << "\t}\n";
 	return;
+}
+
+void recursiveLoad(/*Node *n*/){
+	string line;
+	ifstream myfile ("save.txt");
+	if (myfile.is_open()){
+		while (getline(myfile,line)){
+			cout << line << '\n';
+		}
+		myfile.close();
+	}
+	else cout << "Unable to open file"; 
 }
 
 void saveEverything(){
@@ -839,7 +849,10 @@ void keyboard(unsigned char key, int x, int y)
 			printf("saved\n");
 			saveState();
 			break;
-
+		case 'l':
+			printf("loaded\n");
+			recursiveLoad();
+			break;
 
 		//CHANGE THE MATERIAL
 		case '[':
