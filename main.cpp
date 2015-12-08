@@ -29,6 +29,9 @@ Then switch current node based on the ID*/
 #include "nodeModel.h"
 #include "nodeTransform.h"
 #include <vector>
+#include <fstream>
+#include <iostream>
+using namespace std;
 
 float mouseX,mouseY,globalW,globalH;
 bool buttonDown = false;
@@ -38,6 +41,7 @@ float angle = 0.005f;
 bool PlaneExist = false;
 Hitbox *hit;
 Camera camera;
+ofstream myfile ("save.txt");
 
 //node ids
 int masterID = 0;
@@ -70,7 +74,104 @@ float m_spec[] = {0.633, 0.727811, 0.633, 1.0};
 float shiny = 0.6;
 //LIGHTING
 
+string getModelType(ModelType modelType){
+	switch (modelType){
+		case Sphere:
+			return "Sphere";
+			break;
+		case Cube:
+			return "Cube";
+			break;
+		case Cone:
+			return "Cone";
+			break;
+		case Cylinder:
+			return "Cylinder";
+			break;
+		case Torus:
+			return "Torus";
+			break;
+		case Tetrahedron:
+			return "Tetrahedron";
+			break;
+		case Dodecahedron:
+			return "Dodecahedron";
+			break;
+		case Icosahedron:
+			return "Icosahedron";
+			break;
+		}
+}
 
+string getTransformType(transformType transformationType){
+	switch (transformationType){
+		case Translate:
+			return "Translate";
+			break;
+		case Rotate:
+			return "Rotate";
+			break;
+		case Scale:
+			return "Scale";
+			break;
+		}
+	}
+
+void recursiveSearch(Node *n){
+	if (n->nodeType == group){
+		myfile << "\t group: {\n";
+		// save ID
+		myfile << "ID: " << n->ID << "," << endl;
+	}else if (n->nodeType == model){
+		vertex3D min=n->hit.minP;
+		vertex3D max=n->hit.maxP;
+		myfile << "\t model: {\n";
+		// gives number
+		myfile << "\t modelType: "  << getModelType(n->modelType) << endl;
+		// put materials once pasi gets it
+		myfile << "\t lowHit: (" << min.x << "," << min.y << "," << min.z << ")" << endl;
+		myfile << "\t highHit: (" << max.x << "," << max.y << "," << max.z << ")" << endl;
+		myfile << "\t}\n";
+	}else if (n->nodeType == transformation){
+		myfile << "\t transformation: {\n";
+		// gives number
+		myfile << "\t transformType: "  << getTransformType(n->transformationType) << endl;
+		if (n->transformationType == Rotate){
+			myfile << "\t vector: (" << n->amount4.w << "," << n->amount4.x << "," << n->amount4.y << "," << n->amount4.z << ")" << endl;
+		}else {
+			//cout << "\t vector: (" << n->amount3.x << "," << n->amount3.y << "," << n->amount3.z << ")" << endl;
+			myfile << "\t vector: (" << n->amount3.x << "," << n->amount3.y << "," << n->amount3.z << ")" << endl;
+		}
+		// put materials once pasi gets it
+		//myfile << 
+		myfile << "\t}\n";
+
+
+	}
+	for (int i = 0; i < n->children->size(); i++){
+		recursiveSearch(n->children->at(i));
+	}
+		myfile << "\t}\n";
+	return;
+}
+
+void saveEverything(){
+	Node *tempNode = SG->currentNode;
+	Node temp = *tempNode;
+	//delete tempNode;
+	SG->goToRoot();
+	recursiveSearch(SG->currentNode);
+}
+void saveState(){
+	if (myfile.is_open()){
+		myfile << "root: {\n";
+		myfile << "\t group: {\n\t";
+		saveEverything();
+		myfile.close();
+	}else{
+		printf("Unable to open file\n");
+	}
+}
 
 void mouse(int button, int state, int x, int y){
 	if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN){
@@ -730,6 +831,10 @@ void keyboard(unsigned char key, int x, int y)
 			{
 				SG->deleteThisNode();
 			}
+			break;
+		case 's':
+			printf("saved\n");
+			saveState();
 			break;
 	}
 	glutPostRedisplay();

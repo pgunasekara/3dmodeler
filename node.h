@@ -22,6 +22,26 @@ enum NodeType{
 	model
 };
 
+enum ModelType{
+	Sphere,
+	Cube,
+	Cone,
+	Cylinder,
+	Torus,
+	Teapot,
+	Tetrahedron,
+	Octahedron,
+	Dodecahedron,
+	Icosahedron,
+	Custom
+};
+
+enum transformType{
+	Translate,
+	Rotate,
+	Scale
+};
+
 class Node{
 public:
 	Node();	//constructor
@@ -34,6 +54,10 @@ public:
 	int currentChild;
 	bool current;
 	Hitbox hit;
+	ModelType modelType;		
+	transformType transformationType;
+	Vector3D amount3;
+	Vector4D amount4;
 
 	vec3D tr;
 	vec3D sc;

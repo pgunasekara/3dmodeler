@@ -11,12 +11,14 @@
 #endif
 
 #include "Math/math3D.h"
+#include <stdio.h>
 
 //for gltranslate and gl scale
 NodeTransform::NodeTransform(transformType whatType, Vector3D vec3){
 	nodeType = transformation;
 	transformationType = whatType;
 	amount3 = vec3;
+	//printf("%f %f %f\n",amount3.x,amount3.y,amount3.z);
 }
 
 //for gl rotate

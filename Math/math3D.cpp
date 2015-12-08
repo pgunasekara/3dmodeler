@@ -143,7 +143,6 @@ void vertex3D::movePoint(vec3D v){
 	x += v.x;
 	y += v.y;
 	z += v.z;
-	printf("%f %f %f\n",x,y,z);
 }
 
 void vertex3D::scalePoint(vec3D v){

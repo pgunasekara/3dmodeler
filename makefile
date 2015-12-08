@@ -40,4 +40,4 @@ $(PROGRAM_NAME): main.o node.o nodeGroup.o nodeModel.o nodeTransform.o sceneGrap
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 clean:
-	$(RM) *.o Math/*.o  $(PROGRAM_NAME)$(EXEEXT)
+	$(RM) *.o Math/*.o save.txt $(PROGRAM_NAME)$(EXEEXT)
