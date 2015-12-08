@@ -120,7 +120,7 @@ string getTransformType(transformType transformationType){
 		}
 	}
 
-void recursiveSearch(Node *n){
+void recursiveSave(Node *n){
 	if (n->nodeType == group){
 		myfile << "\t group: {\n";
 		// save ID
@@ -152,7 +152,7 @@ void recursiveSearch(Node *n){
 
 	}
 	for (int i = 0; i < n->children->size(); i++){
-		recursiveSearch(n->children->at(i));
+		recursiveSave(n->children->at(i));
 	}
 		myfile << "\t}\n";
 	return;
@@ -163,7 +163,7 @@ void saveEverything(){
 	Node temp = *tempNode;
 	//delete tempNode;
 	SG->goToRoot();
-	recursiveSearch(SG->currentNode);
+	recursiveSave(SG->currentNode);
 }
 void saveState(){
 	if (myfile.is_open()){
