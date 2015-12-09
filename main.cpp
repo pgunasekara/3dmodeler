@@ -159,30 +159,29 @@ void recursiveSave(Node *n){
 */
 
 void createModel(string type, string material, vertex3D min, vertex3D max){
-
 	if (type == "Cube"){
-		SG->insertChildNodeHere(new NodeModel(Cube));
+		SG->insertChildNodeHere(new NodeModel(Cube,min,max));
 		SG->currentNode->currentMat.fromString(material);
 	}
 	else if (type == "Sphere"){
-		SG->insertChildNodeHere(new NodeModel(Sphere));
+		SG->insertChildNodeHere(new NodeModel(Sphere,min,max));
 		SG->currentNode->currentMat.fromString(material);
 	}else if (type == "Cone"){
-		SG->insertChildNodeHere(new NodeModel(Cone));
+		SG->insertChildNodeHere(new NodeModel(Cone,min,max));
 		SG->currentNode->currentMat.fromString(material);
 	}
 	else if (type == "Torus"){
-		SG->insertChildNodeHere(new NodeModel(Torus));
+		SG->insertChildNodeHere(new NodeModel(Torus,min,max));
 		SG->currentNode->currentMat.fromString(material);
 	}
 	else if (type == "Tetrahedron"){
-		SG->insertChildNodeHere(new NodeModel(Tetrahedron));
+		SG->insertChildNodeHere(new NodeModel(Tetrahedron,min,max));
 		SG->currentNode->currentMat.fromString(material);
 	}
 	cout << type << endl;
 	SG->goToRoot();
 	SG->currentNode = SG->currentNode->children->at(0);
-	SG->currentNode->hit.updateHitbox(min,max);
+	//SG->currentNode->hit.updateHitbox(min,max);
 }
 
 void insertTranslation(float x, float y, float z){
@@ -314,8 +313,6 @@ void recursiveLoad(){
 				}
 			}else if (parseType(line) == ""){
 				// do nothing
-			}else {
-
 			}
 		}
 		infile.close();
@@ -393,6 +390,7 @@ void initGraph()
 
 void resetGraph(){
 	SG->deleteScene();
+	SG->hitBoxNodes.clear();
 	masterID = 1;
 	initGraph();
 }

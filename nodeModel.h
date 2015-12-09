@@ -22,6 +22,7 @@
 class NodeModel:public Node{
 public:
 	NodeModel(ModelType whatType);	//constructor
+	NodeModel(ModelType whatType,vertex3D min, vertex3D max);
 	
 
 	Vector3D position, rotation, scale;
@@ -32,6 +33,8 @@ public:
 	vec3D tr;
 	vec3D sc;
 	quaternion rot;
+	vertex3D min,max;
+	bool method2;
 
 	//Bounding box information is already specified in the math library
 

@@ -74,6 +74,8 @@ public:
 	vec3D sc;
 	quaternion rot;
 	vec3D xaxis,yaxis,zaxis;
+	vertex3D min,max;
+	bool method2;
 
 	cMaterial currentMat;
 

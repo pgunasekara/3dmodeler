@@ -80,7 +80,6 @@ void SceneGraph::insertChildNodeHere(Node *node){
 	currentNode = node;
 }
 
-
 //deletes the current node, relinking the children as necessary
 void SceneGraph::deleteThisNode()
 {
@@ -169,8 +168,9 @@ bool SceneGraph::Intersect(int x, int y){
 			printf("ID FOUND\n");
 			hitBoxNodes.at(i)->current = true;
 			currentNode = hitBoxNodes.at(i);
+			hitBoxNodes.at(i)->hit.draw();
 			printf("%i\n",hitBoxNodes.at(i)->ID);
-			printf("%i\n",hitBoxNodes.at(i)->modelType);
+			//printf("%i\n",hitBoxNodes.at(i)->modelType);
 
 		}
 	}
