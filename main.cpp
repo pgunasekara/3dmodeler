@@ -38,10 +38,6 @@ Then switch current node based on the ID*/
 using namespace std;
 
 float mouseX,mouseY,globalW,globalH;
-bool buttonDown = false;
-float pos[] = {0,1,0};
-float camPos[] = {5.0, 1.0, 5.0};
-float angle = 0.005f;
 bool PlaneExist = false;
 Hitbox *hit;
 Camera camera;
@@ -171,21 +167,17 @@ void createPlane()
 		glVertex3fv(positionA[2]);
 		glVertex3fv(positionA[1]);
 		glVertex3fv(positionA[0]);
-		//Ground plane coordinates, along with the normals
-	//glEnd();
-
-	//glBegin(GL_TRIANGLES);
 		glColor3f(1, 0, 0);
 		glNormal3fv(normB);
 		glVertex3fv(positionB[2]);
 		glVertex3fv(positionB[1]);
 		glVertex3fv(positionB[0]);
-		//Ground plane coordinates, along with the normals
 	glEnd();
 
 	glPopMatrix();
 }
 
+// put in a model type, get it as a string
 string getModelType(ModelType modelType){
 	switch (modelType){
 		case Sphere:
@@ -206,6 +198,7 @@ string getModelType(ModelType modelType){
 		}
 }
 
+// put in a transformation type, get it as a string
 string getTransformType(transformType transformationType){
 	switch (transformationType){
 		case Translate:
@@ -219,7 +212,9 @@ string getTransformType(transformType transformationType){
 			break;
 		}
 	}
-
+// recursively find all the transformations that apply
+// to each model after loading them in, and applies them
+// to the hitbox as well
 void hitboxHelper(Node *n,Node *hitBoxNode){
 	if (n->ID > 1){
 		for (int i = 0; i < n->children->size();i++){
@@ -231,19 +226,18 @@ void hitboxHelper(Node *n,Node *hitBoxNode){
 			hitBoxNode->hit.Translate(vec3D(n->amount3.x,n->amount3.y,n->amount3.z));
 		}else if (n->transformationType == Scale){
 			hitBoxNode->hit.Scale(vec3D(n->amount3.x,n->amount3.y,n->amount3.z));
-		}else if (n->transformationType == Rotate){
-			//hitBoxNode->hit.Rotate(quaternion(n->amount4.w,n->amount4.x,n->amount4.y,n->amount4.z));
 		}
 	}
 	return;
 }
-
+// apply hitbox transforms on all the hitboxes when they are loade
 void applyHitboxes(){
 	for (int i = 0; i < SG->hitBoxNodes.size();i++){
 		hitboxHelper(SG->hitBoxNodes[i]->parent,SG->hitBoxNodes[i]);
 	}
 }
 
+// pass in a type, material and min/ max points of hitbox, creates the model
 void createModel(string type, string material, vertex3D min, vertex3D max){
 	if (type == "Cube"){
 		SG->insertChildNodeHere(new NodeModel(Cube,min,max));
@@ -268,9 +262,8 @@ void createModel(string type, string material, vertex3D min, vertex3D max){
 	SG->goToRoot();
 	SG->currentNode = SG->currentNode->children->at(0);
 }
-
+// insert translation node when loading
 void insertTranslation(float x, float y, float z){
-	//printf("%f %f %f\n", x,y,z);
 	translation.x = x;
 	translation.y = y;
 	translation.z = z;
@@ -278,8 +271,8 @@ void insertTranslation(float x, float y, float z){
 	SG->insertChildNodeHere(new NodeTransform(Translate,translation));
 }
 
+// insert Rotation node when loading
 void insertRotation(float w,float x, float y, float z){
-	//printf("%f %f %f %f\n",w,x,y,z);
 	rotation.x = x;
 	rotation.y = y;
 	rotation.z = z;
@@ -287,20 +280,22 @@ void insertRotation(float w,float x, float y, float z){
 	SG->insertChildNodeHere(new NodeGroup());
 	SG->insertChildNodeHere(new NodeTransform(Rotate,rotation));
 }
-
+// insert Scale node when loading
 void insertScale(float x, float y, float z){
-	//printf("%f %f %f\n", x,y,z);
 	translation.x = x;
 	translation.y = y;
 	translation.z = z;
 	SG->insertChildNodeHere(new NodeGroup());
 	SG->insertChildNodeHere(new NodeTransform(Scale,translation));
 }
-
+// saves every model you have and all their attributes and relationships
+// to text file with name you specify
 void recursiveSave(Node *n){
 	if (n->nodeType == group){
+		// if it is a group node, it saves as group{}
 		myfile << "group{\n";
 	}else if (n->nodeType == model){
+		// if model node, it saves as model {details}
 		vertex3D min=n->hit.minP;
 		vertex3D max=n->hit.maxP;
 		myfile << "model{\n";
@@ -312,9 +307,11 @@ void recursiveSave(Node *n){
 		myfile << min.x << "," << min.y << "," << min.z << endl;
 		myfile << max.x << "," << max.y << "," << max.z << endl;
 	}else if (n->nodeType == transformation){
+		// if transformation node, it saves as transformation {details}
 		myfile << "transformation{\n";
-		// gives number
+		// Transform type
 		myfile << getTransformType(n->transformationType) << endl;
+		// vector to transform by
 		if (n->transformationType == Rotate){
 			myfile << n->amount4.w << "," << n->amount4.x << "," << n->amount4.y << "," << n->amount4.z << endl;
 		}else {
@@ -322,12 +319,14 @@ void recursiveSave(Node *n){
 		}
 	}
 	for (int i = 0; i < n->children->size(); i++){
+		// call save for all the children of current node
 		recursiveSave(n->children->at(i));
 	}
+		// close current bracket
 		myfile << "}\n";
 	return;
 }
-
+// parses a string for the type(group,model,transformation)
 string parseType(string line){
 	string ret = "";
 	for (int i = 0; i < line.size(); i++){
@@ -338,8 +337,8 @@ string parseType(string line){
 	}	
 	return ret;
 }
-
-void recursiveLoad(){
+// iteratively loads a text file into a scenegraph
+void iterativeLoad(){
 	ifstream infile (fileNameLoad);
 	string line;
 	if (infile.is_open()){
@@ -352,26 +351,31 @@ void recursiveLoad(){
 			}else if (parseType(line) == "model"){
 				// parse model
 				string type,material;
+				// gets model type, model material, and gets next line
 				getline(infile,type);
 				getline(infile,material);
 				getline(infile,line);
 				string x,y,z;
 				vertex3D min,max;
 				istringstream iss(line);
+				// saves min point
 				getline(iss,x,',');
 				getline(iss,y,',');
 				getline(iss,z,',');
 				min = vertex3D(stof(x),stof(y),stof(z));
+				// saves max point
 				getline(infile,line);
 				istringstream issLine2(line);
 				getline(issLine2,x,',');
 				getline(issLine2,y,',');
 				getline(issLine2,z,',');
 				max = vertex3D(stof(x),stof(y),stof(z));
+				// creates model into Scene graph
 				createModel(type,material,min,max);
 			}else if (parseType(line) == "transformation"){
 				getline(infile,line);
 				if (line == "Translate"){
+					// parses and insert Translation node
 					getline(infile,line);
 					istringstream iss(line);
 					string x,y,z;
@@ -380,6 +384,7 @@ void recursiveLoad(){
 					getline(iss,z,',');
 					insertTranslation(stof(x),stof(y),stof(z));
 				}else if (line == "Rotate"){
+					// parses and insert Rotation node
 					getline(infile,line);
 					istringstream iss(line);
 					string w,x,y,z;
@@ -389,6 +394,7 @@ void recursiveLoad(){
 					getline(iss,z,',');				
 					insertRotation(stof(w),stof(x),stof(y),stof(z));
 				}else if (line == "Scale"){
+					// parses and insert Scale node
 					getline(infile,line);
 					istringstream iss(line);
 					string x,y,z;
@@ -404,24 +410,26 @@ void recursiveLoad(){
 		infile.close();
 	}
 	else cout << "Unable to open file"; 
-	for (int i = 0; i < SG->hitBoxNodes.size(); i++){
-		cout << SG->hitBoxNodes.at(i)->ID << endl;
-	}
 	applyHitboxes();
 }
 
 void saveEverything(){
+	// save current node
 	Node *tempNode = SG->currentNode;
 	Node temp = *tempNode;
-	//delete tempNode;
+	// go to the root and recursively save everything
 	SG->goToRoot();
 	recursiveSave(SG->currentNode);
 }
 void saveState(){
+	// open filestream
 	myfile = ofstream(fileNameSave);
 	if (myfile.is_open()){
+		// put open brackets
 		myfile << "{" << endl;
+		// save everything
 		saveEverything();
+		// close file
 		myfile.close();
 	}else{
 		printf("Unable to open file\n");
@@ -524,7 +532,6 @@ void keyboard(unsigned char key, int x, int y)
 			SG->insertChildNodeHere(new NodeTransform(Translate, ip));
 			
 			SG->insertChildNodeHere(new NodeModel(Cube));
-			//hit = new Hitbox();
 			PlaneExist = true;
 			break;
 		case 'x':
@@ -543,7 +550,6 @@ void keyboard(unsigned char key, int x, int y)
 			
 			SG->insertChildNodeHere(new NodeModel(Sphere));
 			SG->currentNode->current = true;
-			//hit = new Hitbox();
 			PlaneExist = true;
 			break;
 		case 'c':
@@ -603,7 +609,6 @@ void keyboard(unsigned char key, int x, int y)
 		case 'y':
 			if (PlaneExist){
 				//Modify Transformation Node
-				//Node *tempCurrentNode = SG->currentNode;
 				
 				while(SG->currentNode->nodeType == model)
 					SG->goToParent();
@@ -646,7 +651,6 @@ void keyboard(unsigned char key, int x, int y)
 
 				SG->insertChildNodeHere(new NodeGroup());
 				SG->insertChildNodeHere(tempNode);
-				//SG->currentNode = tempCurrentNode;
 
 				SG->draw();
 			}
@@ -701,7 +705,6 @@ void keyboard(unsigned char key, int x, int y)
 
 		case 'u':
 			if (PlaneExist){
-				Node *tempCurrentNode;
 				//Modify Transformation Node
 				while(SG->currentNode->nodeType == model)
 					SG->goToParent();
@@ -753,7 +756,6 @@ void keyboard(unsigned char key, int x, int y)
 		case 'g':
 		{
 			//Modify Transformation Node
-			//Node *tempCurrentNode = SG->currentNode;
 			if (PlaneExist){
 				while(SG->currentNode->nodeType == model)
 					SG->goToParent();
@@ -797,7 +799,6 @@ void keyboard(unsigned char key, int x, int y)
 				SG->insertChildNodeHere(new NodeGroup());
 				SG->insertChildNodeHere(tempNode);
 				SG->draw();
-				//SG->currentNode = tempCurrentNode;
 			}
 		}
 		break;
@@ -855,7 +856,6 @@ void keyboard(unsigned char key, int x, int y)
 		case 'k':
 		{
 			if (PlaneExist){
-				Node *tempCurrentNode;
 				//Modify Transformation Node
 				while(SG->currentNode->nodeType == model)
 					SG->goToParent();
@@ -904,7 +904,6 @@ void keyboard(unsigned char key, int x, int y)
 		case 'i':
 		{
 			//Modify Transformation Node
-			//Node *tempCurrentNode = SG->currentNode;
 			if (PlaneExist){
 				while(SG->currentNode->nodeType == model)
 					SG->goToParent();
@@ -931,9 +930,6 @@ void keyboard(unsigned char key, int x, int y)
 					}
 				}
 
-				//SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
-
-
 				//Now we need to link nodes below it to the new node
 				for(int i = 0; i < SG->currentNode->children->size(); i++)
 				{
@@ -948,7 +944,6 @@ void keyboard(unsigned char key, int x, int y)
 				SG->insertChildNodeHere(new NodeGroup());
 				SG->insertChildNodeHere(tempNode);
 				SG->draw();
-				//SG->currentNode = tempCurrentNode;
 			}
 			break;
 		}
@@ -982,10 +977,6 @@ void keyboard(unsigned char key, int x, int y)
 					}
 				}
 
-				//SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
-
-
-
 				//Now we need to link nodes below it to the new node
 				for(int i = 0; i < SG->currentNode->children->size(); i++)
 				{
@@ -1007,7 +998,6 @@ void keyboard(unsigned char key, int x, int y)
 		case 'p':
 		{
 			if (PlaneExist){
-				Node *tempCurrentNode;
 				//Modify Transformation Node
 				while(SG->currentNode->nodeType == model)
 					SG->goToParent();
@@ -1033,8 +1023,6 @@ void keyboard(unsigned char key, int x, int y)
 						break;
 					}
 				}
-
-				//SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
 
 				//Now we need to link nodes below it to the new node
 				for(int i = 0; i < SG->currentNode->children->size(); i++)
@@ -1076,22 +1064,13 @@ void keyboard(unsigned char key, int x, int y)
 		case 'l':
 			printf("Enter a filename to load: \n");
 			cin >> fileNameLoad;
-			recursiveLoad();
+			iterativeLoad();
 			if (SG->hitBoxNodes.size() >= 1){
 				PlaneExist = true;
 			}
 			printf("\nLoaded\n");
 			break;
 
-		//CHANGE THE MATERIAL
-		/*case '[':
-			if (PlaneExist){
-				if(SG->currentNode->nodeType == model)
-				{
-					SG->currentNode->currentMat.toRuby();
-				}
-			}
-			break;*/
 		case 'T':
 			if(SG->currentNode->nodeType == model)
 			{
@@ -1223,39 +1202,6 @@ void keyboard(unsigned char key, int x, int y)
 	glutPostRedisplay();
 }
 
-/*void special(int key, int x, int y)
-{
-	/* arrow key presses move the camera *0/
-	switch(key)
-	{
-		case GLUT_KEY_LEFT:
-			camPos[0]-=0.1;
-			break;
-
-		case GLUT_KEY_RIGHT:
-			camPos[0]+=0.1;
-			break;
-
-		case GLUT_KEY_UP:
-			camPos[2] -= 0.1;
-			break;
-
-		case GLUT_KEY_DOWN:
-			camPos[2] += 0.1;
-			break;
-		
-		case GLUT_KEY_HOME:
-			camPos[1] += 0.1;
-			break;
-
-		case GLUT_KEY_END:
-			camPos[1] -= 0.1;
-			break;
-
-	}
-	glutPostRedisplay();
-}*/
-
 void init(void)
 {	
 	GLuint id = 1;
@@ -1316,12 +1262,8 @@ void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//draw the sceneGraph
 	createPlane();
 	SG->draw();
-	//if (PlaneExist){
-	//	hit->draw();
-	//}
 	lightSpheres();
 
 	glutSwapBuffers();
@@ -1364,7 +1306,7 @@ int main(int argc, char** argv)
 		<< "\tRotate(by 1 degree per press) - i: x-axis\to: y-axis\tp: z-axis\n\tNOTE: Use ALT modifier to go in the reverse direction with the same keys.\n"
 		<< "\tScale(by 0.5x) - g: x-axis\th: y-axis\tj: z-axis\n\tNOTE: Use ALT modifier to go in the reverse direction with the same keys.\n"
 		<< "\n\nr: Reset Scene"
-		<< "\ns: Save current scene to file save.txt"
+		<< "\ns: Save current scene to file name entered in console"
 		<< "\nl: load from \'filename.txt\'. Enter a file name after the prompt."
 		<< "\nClick and Drag on the Scene to rotate the camera about it's current point.(EXTRA FEATURE)"
 		<< "\nTranslate Camera"
@@ -1392,7 +1334,6 @@ int main(int argc, char** argv)
 
 	glutDisplayFunc(display);	//registers "display" as the display callback function
 	glutKeyboardFunc(keyboard);
-	//glutSpecialFunc(special);
 	glutReshapeFunc(reshape);
 	glutMouseFunc(mouse);
 	glutMotionFunc(passive);

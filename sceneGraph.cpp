@@ -22,7 +22,6 @@ SceneGraph::SceneGraph(){
 	currentNode = rootNode;
 
 	currentNode->current = true;
-	printf("scene graph init done\n");
 	// R0
 	vec3D near = vec3D();
 	// R1
@@ -57,7 +56,6 @@ void SceneGraph::transformNode(Node *node)
 
 	if(node->nodeType == transformation)
 	{
-		//currentNode.
 	}
 }
 
@@ -95,10 +93,6 @@ void SceneGraph::deleteThisNode()
 void SceneGraph::draw(){
 	rootNode->draw();
 }
-
-
-/*THIS NEEDS TO BE FIXED SO THAT IT DOESN't JUST SEARCH TOP NODES*/
-
 
 void SceneGraph::searchByID(int ID)
 {
@@ -171,13 +165,9 @@ bool SceneGraph::Intersect(int x, int y){
 			{
 				hitBoxNodes.at(j)->current = false;
 			}
-			printf("ID FOUND\n");
 			hitBoxNodes.at(i)->current = true;
 			currentNode = hitBoxNodes.at(i);
 			hitBoxNodes.at(i)->hit.draw();
-			printf("%i\n",hitBoxNodes.at(i)->ID);
-			//printf("%i\n",hitBoxNodes.at(i)->modelType);
-
 		}
 	}
 	return false;

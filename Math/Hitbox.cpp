@@ -12,7 +12,7 @@
 #  include <GL/freeglut.h>
 #endif
 
-
+// generic plane constructor
 Plane::Plane(){
 	a = vertex3D(-0.5,-0.5,0.5);
 	b = vertex3D(0.5,-0.5,0.5);
@@ -26,7 +26,7 @@ Plane::Plane(){
 	yPlane = false;
 	zPlane = false;
 }
-
+// define plane based on coords given
 Plane::Plane(vertex3D a, vertex3D b, vertex3D c, vertex3D d,bool xPlane, bool yPlane, bool zPlane){
 	this->a = a;
 	this->b = b;
@@ -44,7 +44,7 @@ Plane::Plane(vertex3D a, vertex3D b, vertex3D c, vertex3D d,bool xPlane, bool yP
 	norm = v1.cross(v2);
 }
 
-
+// draw a single plane
 void Plane::draw(){
 	glBegin(GL_LINE_LOOP);
 			glColor3f(1.0f,1.0f,0.0f);
@@ -56,7 +56,7 @@ void Plane::draw(){
 		    //
 	glEnd();
 }
-//FIX THIS FJSDOAIJFDSIOAJFISDO
+// check if ray intersects plane
 bool Plane::Intersect(vec3D v0,vec3D vD, float* tNear, float* tFar, vertex3D minP, vertex3D maxP){
 	float t1,t2;
 	if (yPlane && zPlane){
@@ -143,7 +143,7 @@ bool Plane::Intersect(vec3D v0,vec3D vD, float* tNear, float* tFar, vertex3D min
 	return true;
 }
 
-
+// scale plane based on transformation vector
 void Plane::Scale(vec3D transform){
 	a.scalePoint(transform);
 	b.scalePoint(transform);
@@ -152,6 +152,7 @@ void Plane::Scale(vec3D transform){
 	norm = norm * transform;
 
 }
+// translate plane based on transformation vector
 void Plane::Translate(vec3D transform){
 	a.movePoint(transform);
 	b.movePoint(transform);
@@ -160,6 +161,7 @@ void Plane::Translate(vec3D transform){
 	norm = norm + transform;
 }
 
+// rotate plane based on transformation quaternion
 void Plane::Rotate(quaternion transform){
 	a.rotatePoint(transform.rotationMatrix);
 	b.rotatePoint(transform.rotationMatrix);
@@ -168,7 +170,7 @@ void Plane::Rotate(quaternion transform){
 	norm.applyMatrix(transform.rotationMatrix);
 }
 
-
+// generic hitbox constructor
 Hitbox::Hitbox(){
 	vertex3D v1 = vertex3D(-0.5,-0.5,0.5);
 	vertex3D v2 = vertex3D(0.5,-0.5,0.5);
@@ -192,7 +194,7 @@ Hitbox::Hitbox(){
 	yaxis = vec3D(0,1,0);
 	zaxis = vec3D(0,0,1);
 }
-
+// create hitbox based on dimensions and ID
 Hitbox::Hitbox(vertex3D low, vertex3D high, int ID){
 	vertex3D v1 = vertex3D(low.x,low.y,high.z);
 	vertex3D v2 = vertex3D(high.x,low.y,high.z);
@@ -217,13 +219,13 @@ Hitbox::Hitbox(vertex3D low, vertex3D high, int ID){
 	yaxis = vec3D(0,1,0);
 	zaxis = vec3D(0,0,1);
 }
-
+// draw all planes in hitbox
 void Hitbox::draw(){
 	for (int i = 0; i <Planes.size(); i++){
 		Planes[i]->draw();
 	}
 }
-
+// check if ray intersects box
 int Hitbox::Intersect(vec3D v0,vec3D vD){
 	float *tNear;
 	float *tFar;
@@ -239,24 +241,7 @@ int Hitbox::Intersect(vec3D v0,vec3D vD){
 	}
 	return this->ID;
 }
-
-int Hitbox::IntersectSphere(vec3D Ray){
-	double sq = Ray.y*Ray.y  - 4*Ray.x*Ray.z;
-
-	double t0 = 0, t1 = 0;
-
-	if(sq < 0)
-		printf("no Intersection!!!\n");
-	else{
-		t0 = ((-1) * Ray.y + sqrt(sq))/(2*Ray.x);
-		t1 = ((-1) * Ray.y - sqrt(sq))/(2*Ray.x);
-
-		printf("Intersection at: t = %f, and t = %f\n", t0, t1);
-		return ID;
-	}
-	return -1;
-}
-
+// scale hitbox
 void Hitbox::Scale(vec3D transform){
 	for (int i = 0; i < Planes.size(); i++){
 		Planes[i]->Scale(transform);
@@ -264,7 +249,7 @@ void Hitbox::Scale(vec3D transform){
 	minP.scalePoint(transform);
 	maxP.scalePoint(transform);
 }
-
+// translate hitbox
 void Hitbox::Translate(vec3D transform){
 	for (int i = 0; i < Planes.size(); i++){
 		Planes[i]->Translate(transform);
@@ -272,7 +257,7 @@ void Hitbox::Translate(vec3D transform){
 	minP.movePoint(transform);
 	maxP.movePoint(transform);
 }
-
+// rotate hitbox
 void Hitbox::Rotate(quaternion quat){
 	quat.updateRotationMatrix();
 	for (int i = 0; i < Planes.size(); i++){
@@ -283,7 +268,6 @@ void Hitbox::Rotate(quaternion quat){
 }
 
 void Hitbox::updateHitbox(vertex3D low, vertex3D high){
-	printf("%f %f %f\n",low.x,low.y,low.z);
 	vertex3D v1 = vertex3D(low.x,low.y,high.z);
 	vertex3D v2 = vertex3D(high.x,low.y,high.z);
 	vertex3D v3 = vertex3D(high.x,high.y,high.z);

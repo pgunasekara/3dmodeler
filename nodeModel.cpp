@@ -142,10 +142,3 @@ void NodeModel::nodeSpecificCodeDown(){
 		}
 	}
 }
-/*
-void NodeModel::applyChangesAxes(vec3D transform){
-	xaxis = (xaxis + transform).normalize();
-	yaxis = (yaxis + transform).normalize();
-	zaxis = (zaxis + transform).normalize();
-};
-*/
