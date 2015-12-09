@@ -125,36 +125,19 @@ void NodeModel::nodeSpecificCodeDown(){
 			break;
 		case Cube:
 			hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
-			glutSolidCube(1);
+			glutSolidCube(0.8);
 			break;
 		case Cone:
 			hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
-			glutSolidCone(1,1,12,10);
-			break;
-		case Cylinder:
-			//TRANSFORM THIS INTO A CYLINDER
-			//TODO*****************************************************
-			hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
-			glutSolidCone(1,1,12,10);
+			glutSolidCone(0.6,0.6,12,10);
 			break;
 		case Torus:
 			hit = Hitbox(vertex3D(-0.8,-0.8,-0.5), vertex3D(0.8,0.8,0.5), ID);
-			glutSolidTorus(0.25,0.5,12,12);
+			glutSolidTorus(0.20,0.4,12,12);
 			break;
 		case Tetrahedron:
-			hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
+			hit = Hitbox(vertex3D(-1.0,-1.0,-1.0), vertex3D(1.0,1.0,1.0), ID);
 			glutSolidTetrahedron();
-			break;
-		case Dodecahedron:
-			hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
-			glutSolidDodecahedron();
-			break;
-		case Icosahedron:
-			hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
-			glutSolidIcosahedron();
-			break;
-		case Custom:
-			//own mesh thing
 			break;
 		}
 	}

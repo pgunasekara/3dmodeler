@@ -24,7 +24,6 @@ Then switch current node based on the ID*/
 #include "structs.h"
 #include "Math/math3D.h"
 
-//#include "node.h"
 #include "materials.h"
 //sceneGraph
 #include "sceneGraph.h"
@@ -37,7 +36,6 @@ Then switch current node based on the ID*/
 #include <iostream>
 #include <sstream>
 using namespace std;
-using std::string;
 
 float mouseX,mouseY,globalW,globalH;
 bool buttonDown = false;
@@ -199,20 +197,11 @@ string getModelType(ModelType modelType){
 		case Cone:
 			return "Cone";
 			break;
-		case Cylinder:
-			return "Cylinder";
-			break;
 		case Torus:
 			return "Torus";
 			break;
 		case Tetrahedron:
 			return "Tetrahedron";
-			break;
-		case Dodecahedron:
-			return "Dodecahedron";
-			break;
-		case Icosahedron:
-			return "Icosahedron";
 			break;
 		}
 }
@@ -574,23 +563,6 @@ void keyboard(unsigned char key, int x, int y)
 			SG->insertChildNodeHere(new NodeModel(Cone));
 			PlaneExist = true;
 			break;
-		case 'v':
-			//CYLINDER
-			//Go to the top group node
-			while(SG->currentNode->ID > 1)
-			{
-				SG->goToParent();
-			}
-			
-			//Create new transformation Node
-			ip.x = 0;
-			ip.y = 0;
-			ip.z = 0;
-			SG->insertChildNodeHere(new NodeTransform(Translate, ip));
-			
-			SG->insertChildNodeHere(new NodeModel(Cylinder));
-			PlaneExist = true;
-			break;
 		case 'b':
 			//TORUS
 			//Go to the top group node
@@ -609,7 +581,7 @@ void keyboard(unsigned char key, int x, int y)
 			PlaneExist = true;
 			break;
 		case 'm':
-			//CUBE
+			// Tetrahedron
 			//Go to the top group node
 			while(SG->currentNode->ID > 1)
 			{
@@ -1105,6 +1077,9 @@ void keyboard(unsigned char key, int x, int y)
 			printf("Enter a filename to load: \n");
 			cin >> fileNameLoad;
 			recursiveLoad();
+			if (SG->hitBoxNodes.size() >= 1){
+				PlaneExist = true;
+			}
 			printf("\nLoaded\n");
 			break;
 
