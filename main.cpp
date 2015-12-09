@@ -42,7 +42,7 @@ using std::string;
 float mouseX,mouseY,globalW,globalH;
 bool buttonDown = false;
 float pos[] = {0,1,0};
-float camPos[] = {2.5, 2.5, 5};
+float camPos[] = {5.0, 1.0, 5.0};
 float angle = 0.005f;
 bool PlaneExist = false;
 Hitbox *hit;
@@ -170,18 +170,18 @@ void createPlane()
 	glBegin(GL_TRIANGLES);
 		glColor3f(1, 0, 0);
 		glNormal3fv(normA);
-		glVertex3fv(positionA[0]);
-		glVertex3fv(positionA[1]);
 		glVertex3fv(positionA[2]);
+		glVertex3fv(positionA[1]);
+		glVertex3fv(positionA[0]);
 		//Ground plane coordinates, along with the normals
 	//glEnd();
 
 	//glBegin(GL_TRIANGLES);
 		glColor3f(1, 0, 0);
 		glNormal3fv(normB);
-		glVertex3fv(positionB[0]);
-		glVertex3fv(positionB[1]);
 		glVertex3fv(positionB[2]);
+		glVertex3fv(positionB[1]);
+		glVertex3fv(positionB[0]);
 		//Ground plane coordinates, along with the normals
 	glEnd();
 
@@ -458,24 +458,6 @@ void initLighting()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diff0);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, amb0);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, spec0);
-}
-
-/* drawAxis() -- draws an axis at the origin of the coordinate system
- *   red = +X axis, green = +Y axis, blue = +Z axis
- */
-void drawAxis()
-{
-	glBegin(GL_LINES);
-	glColor3f(1, 0, 0);
-	glVertex3f(0,0,0);
-	glVertex3f(50,0,0);
-	glColor3f(0,1,0);
-	glVertex3f(0,0,0);
-	glVertex3f(0,50,0);
-	glColor3f(0,0,1);
-	glVertex3f(0,0,0);
-	glVertex3f(0,0,50);
-	glEnd();
 }
 
 //function which will populate a sample graph 
@@ -1330,7 +1312,7 @@ void reshape(int w, int h)
 	globalH = h;
 	mouseX = w/2;
 	mouseY = h/2;
-	gluLookAt(2.5, 2.5, 2.5, 0, 0, 0, 0, 1, 0);
+	gluLookAt(5.0, 0.0, 5.0, 0, 0, 0, 0, 1, 0);
 }
 
 
@@ -1360,7 +1342,6 @@ void display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//draw the sceneGraph
-	drawAxis();
 	createPlane();
 	SG->draw();
 	//if (PlaneExist){
@@ -1443,8 +1424,8 @@ int main(int argc, char** argv)
 
 	initLighting();
 
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	glutMainLoop();				//starts the event loop
 	return(0);					//return may not be necessary on all compilers

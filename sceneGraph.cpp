@@ -165,9 +165,6 @@ bool SceneGraph::Intersect(int x, int y){
 	for(int i = 0; i < hitBoxNodes.size(); i++)
 	{
 		ID_tmp = hitBoxNodes.at(i)->hit.Intersect(near,distance);
-		if (ID_tmp == -1){
-			ID_tmp = hitBoxNodes.at(i)->hit.IntersectSphere(vec3D(A,B,C));
-		}
 		if(ID_tmp != -1)
 		{
 			for(int j = 0; j < hitBoxNodes.size(); j++)

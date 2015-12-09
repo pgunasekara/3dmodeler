@@ -22,7 +22,7 @@ We both informed Dr. Gwosdz and recieved his approval in using this code
 
 
 Camera::Camera(){
-	camera_position = vec3D(2.5,2.5,2.5);
+	camera_position = vec3D(5.0,0.0,5.0);
 	camera_look_at = vec3D(0,0,0);
 	camera_up = vec3D(0, 1, 0);
 	camera_position_delta = vec3D();
