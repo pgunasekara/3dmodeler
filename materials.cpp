@@ -146,7 +146,7 @@ cMaterial::cMaterial()
 	current = &emerald;
 }
 
-cMaterial::cMaterial()
+cMaterial::~cMaterial()
 {
 	//delete current;
 }
