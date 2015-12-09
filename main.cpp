@@ -70,16 +70,20 @@ SceneGraph *SG;
 
 
 /*LIGHTING*/
-float light_pos[] = {0.0f, 10.0f, 0.0f, 1.0f};
+//float light_pos[] = {0.0f, 10.0f, 0.0f, 1.0f};
 float amb0[4] = {1, 1, 1, 1};
 float diff0[4] = {1, 1, 1, 1};
 float spec0[4] = {1, 1, 1, 1};
-
+/*
 float m_amb[] = {0.0215, 0.1745, 0.0215, 1.0};
 float m_diff[] = {0.07568, 0.61424, 0.07568, 1.0};
 float m_spec[] = {0.633, 0.727811, 0.633, 1.0};
 float shiny = 0.6;
-//LIGHTING
+//LIGHTING*/
+
+float light_pos[] = {10.0f, 20.0f, 10.0f, 1.0f};//This is the position for the first light
+
+float light_pos_2[] = {-10.0f, 20.0f, -10.0f, 1.0f};//This is the position for the second light
 
 //Position of the ground plane
 GLfloat positionA[3][3] = {{-25.0f, -0.5f, -25.0f}, {25.0f, -0.5f, -25.0f}, {25.0f, -0.5f, 25.0f}};
@@ -89,6 +93,9 @@ GLfloat positionB[3][3] = {{25.0f, -0.5f, 25.0f},{-25.0f, -0.5f, 25.0f},{-25.0f,
 float vecA[3], vecB[3], vecC[3], vecD[3]; 
 GLfloat normA[3], normB[3];
 bool calculated = false;
+
+bool light_0_toggle = true;
+bool light_1_toggle = true;
 
 
 ofstream myfile;
@@ -147,14 +154,16 @@ void createPlane()
 	}
 
 	glBegin(GL_TRIANGLES);
+		glColor3f(1, 0, 0);
 		glNormal3fv(normA);
 		glVertex3fv(positionA[0]);
 		glVertex3fv(positionA[1]);
 		glVertex3fv(positionA[2]);
 		//Ground plane coordinates, along with the normals
-	glEnd();
+	//glEnd();
 
-	glBegin(GL_TRIANGLES);
+	//glBegin(GL_TRIANGLES);
+		glColor3f(1, 0, 0);
 		glNormal3fv(normB);
 		glVertex3fv(positionB[0]);
 		glVertex3fv(positionB[1]);
@@ -452,7 +461,6 @@ void saveEverything(){
 	recursiveSave(SG->currentNode);
 }
 void saveState(){
-	//ofstream myfile (fileNameSave);
 	myfile = ofstream(fileNameSave);
 	if (myfile.is_open()){
 		myfile << "{" << endl;
@@ -474,9 +482,11 @@ void initLighting()
 {
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
 
 	glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
-	
+	glLightfv(GL_LIGHT1, GL_POSITION, light_pos_2);
+
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diff0);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, amb0);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, spec0);
@@ -1149,14 +1159,138 @@ void keyboard(unsigned char key, int x, int y)
 			break;
 
 		//CHANGE THE MATERIAL
-		case '[':
+		/*case '[':
 			if (PlaneExist){
 				if(SG->currentNode->nodeType == model)
 				{
 					SG->currentNode->currentMat.toRuby();
 				}
 			}
+			break;*/
+		case 'T':
+			if(SG->currentNode->nodeType == model)
+			{
+				SG->currentNode->currentMat.toRuby();
+			}
 			break;
+		case 'Y':
+			if(SG->currentNode->nodeType == model)
+			{
+				SG->currentNode->currentMat.toEmerald();
+			}
+			break;
+		case 'U':
+			if(SG->currentNode->nodeType == model)
+			{
+				SG->currentNode->currentMat.toCopper();
+			}
+			break;
+		case 'I':
+			if(SG->currentNode->nodeType == model)
+			{
+				SG->currentNode->currentMat.toBlackRubber();
+			}
+			break;
+		case 'O':
+			if(SG->currentNode->nodeType == model)
+			{
+				SG->currentNode->currentMat.toJade();
+			}
+			break;
+
+		//Lighting Controls		
+		//LIGHT 1 SECTION
+		case 'Z': //y axis
+		{
+			int mod = glutGetModifiers();
+			if(mod == GLUT_ACTIVE_ALT)
+				light_pos[1] -= 2;
+			else
+				light_pos[1] += 2;
+			break;
+		}
+
+		case 'X':	//x-axis
+		{
+			int mod = glutGetModifiers();
+			if(mod == GLUT_ACTIVE_ALT)
+				light_pos[0] -= 2;
+			else
+				light_pos[0] += 2;
+			break;
+		}
+
+		case 'C':	//z-axis
+		{
+			int mod = glutGetModifiers();
+			if(mod == GLUT_ACTIVE_ALT)
+				light_pos[2] -= 2;
+			else
+				light_pos[2] += 2;
+			break;
+		}
+
+		//LIGHT 2 SECTION
+		case 'V': //y axis
+		{
+			int mod = glutGetModifiers();
+			if(mod == GLUT_ACTIVE_ALT)
+				light_pos_2[1] -= 2;
+			else
+				light_pos_2[1] += 2;
+			break;
+		}
+
+		case 'B':	//x-axis
+		{
+			int mod = glutGetModifiers();
+			if(mod == GLUT_ACTIVE_ALT)
+				light_pos_2[0] -= 2;
+			else
+				light_pos_2[0] += 2;
+			break;
+		}
+
+		case 'N':	//z-axis
+		{
+			int mod = glutGetModifiers();
+			if(mod == GLUT_ACTIVE_ALT)
+				light_pos_2[2] -= 2;
+			else
+				light_pos_2[2] += 2;
+			break;
+		}
+
+		//This Section holds the toggles for the lights
+		case '[':
+			if(light_0_toggle == true)
+			{
+				//Currently light0 is ON, turn it off
+				glDisable(GL_LIGHT0);
+				light_0_toggle = false;
+			}
+			else
+			{
+				glEnable(GL_LIGHT0);
+				light_0_toggle = true;
+			}
+			break;
+		case ']':
+			if(light_1_toggle == true)
+			{
+				//Currently light1 is ON, turn it off
+				glDisable(GL_LIGHT1);
+				light_1_toggle = false;
+			}
+			else
+			{
+				glEnable(GL_LIGHT1);
+				light_1_toggle = true;
+				//printf("light1on\n");
+			}
+			break;
+
+		
 		case 'r':
 			resetGraph();
 			break;
@@ -1232,6 +1366,19 @@ void reshape(int w, int h)
 }
 
 
+void lightSpheres()
+{
+	glPushMatrix();
+	glTranslatef(light_pos[0],light_pos[1],light_pos[2]);//This translate will be move the sphere around light 1
+	glutSolidSphere(0.5,10,10);//Create the sphere
+	glPopMatrix();
+
+
+	glPushMatrix();
+	glTranslatef(light_pos_2[0],light_pos_2[1],light_pos_2[2]);//This translate will be move the sphere around light 2
+	glutSolidSphere(0.5,10,10);
+	glPopMatrix();
+}
 
 void display(void)
 {
@@ -1244,6 +1391,7 @@ void display(void)
 	//if (PlaneExist){
 	//	hit->draw();
 	//}
+	lightSpheres();
 
 	glutSwapBuffers();
 }
@@ -1272,6 +1420,34 @@ void passive(int x,int y){
 /* main function - program entry point */
 int main(int argc, char** argv)
 {
+	cout << "COMP SCI 3GC3 Assignment 3: Simple 3D Modeling System\n"
+		<< "\tPasindu Gunasekara(001412155, gunasepi), Roberto Temelkovski(001418731 ,temelkr)\n\n"
+		<< "\t\tNOTE: Light 2 is initially DISABLED, to enable use the hotkeys below.\n\n"
+		<< "Hotkeys\n"
+		<< "-------\n"
+		<< "Click on an object to pick it using Ray picking\n"
+		<< "Add Objects to Scene\n"
+		<< "\tz: CUBE\n\tx: SPHERE\n\tc: CONE\n\tb: TORUS\n\tm: TETRAHEDRON\n\n"
+		<< "Transforming currently selected object\n"
+		<< "\tTranslate(by 0.05 units per press) - t: x-axis\ty: y-axis\tu: z-axis\n\tNOTE: Use ALT modifier to go in the reverse direction with the same keys.\n"
+		<< "\tRotate(by 1 degree per press) - i: x-axis\to: y-axis\tp: z-axis\n\tNOTE: Use ALT modifier to go in the reverse direction with the same keys.\n"
+		<< "\tScale(by 0.5x) - g: x-axis\th: y-axis\tj: z-axis\n\tNOTE: Use ALT modifier to go in the reverse direction with the same keys.\n"
+		<< "\n\nr: Reset Scene"
+		<< "\ns: Save current scene to file save.txt"
+		<< "\nl: load from \'filename.txt\'. Enter a file name after the prompt."
+		<< "\nClick and Drag on the Scene to rotate the camera about it's current point.(EXTRA FEATURE)"
+		<< "\nTranslate Camera"
+		<< "\n\t(UPPER CASE)W A S D: Translate back and forth along the x-axis or the z-axis"
+		<< "\n\t(UPPER CASE)Q E: Translate up and down, along the y-axis"
+		<< "\n\nControlling LIGHT 1:"
+		<< "\n\t(UPPERCASE)(Use ALT to go reverse) Z: y-axis, X: x-axis, C: z-axis"
+		<< "\n\t[:Toggle ON/OFF LIGHT 1"
+		<< "\n\nControlling LIGHT 2:"
+		<< "\n\t(UPPERCASE)(Use ALT to go reverse) V: y-axis, B: x-axis, N: z-axis"
+		<< "\n\t]:Toggle ON/OFF LIGHT 1"
+		<< "\n\nSwitching Materials:"
+		<< "\n\t(UPPERCASE) T: Ruby, Y:Emerald, U: Copper, I: Black Rubber, O: Jade";
+
 	glutInit(&argc, argv);		//starts up GLUT
 	
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -1281,7 +1457,7 @@ int main(int argc, char** argv)
 	glutInitWindowSize(600, 600);
 	glutInitWindowPosition(50, 50);
 
-	glutCreateWindow("SimpleSceneGraph");	//creates the window
+	glutCreateWindow("Assignment 3");	//creates the window
 
 	glutDisplayFunc(display);	//registers "display" as the display callback function
 	glutKeyboardFunc(keyboard);
