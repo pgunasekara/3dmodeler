@@ -74,16 +74,22 @@ SceneGraph *SG;
 float amb0[4] = {1, 1, 1, 1};
 float diff0[4] = {1, 1, 1, 1};
 float spec0[4] = {1, 1, 1, 1};
-/*
-float m_amb[] = {0.0215, 0.1745, 0.0215, 1.0};
-float m_diff[] = {0.07568, 0.61424, 0.07568, 1.0};
-float m_spec[] = {0.633, 0.727811, 0.633, 1.0};
+
+float m_amb[] = {0.25, 0.25, 0.25, 1.0};
+float m_diff[] = {0.4, 0.4, 0.4, 1.0};
+float m_spec[] = {0.774597, 0.774597, 0.774597, 1.0};
 float shiny = 0.6;
-//LIGHTING*/
+//LIGHTING
 
-float light_pos[] = {10.0f, 20.0f, 10.0f, 1.0f};//This is the position for the first light
+float light_pos[] = {10.0f, 5.0f, 10.0f, 1.0f};//This is the position for the first light
 
-float light_pos_2[] = {-10.0f, 20.0f, -10.0f, 1.0f};//This is the position for the second light
+float light_pos_2[] = {-10.0f, 5.0f, -10.0f, 1.0f};//This is the position for the second light
+
+float m_amb_2[] = {0.1, 0.18725, 0.1745, 1.0};
+float m_diff_2[] = {0.396, 0.74151, 0.69102, 1.0};
+float m_spec_2[] = {0.297254, 0.30829, 0.306678, 1.0};
+float shiny_2 = 0.1;
+
 
 //Position of the ground plane
 GLfloat positionA[3][3] = {{-25.0f, -0.5f, -25.0f}, {25.0f, -0.5f, -25.0f}, {25.0f, -0.5f, 25.0f}};
@@ -153,6 +159,14 @@ void createPlane()
 		normB[2] = vecC[0]*vecD[1] - vecC[1]*vecD[0];
 	}
 
+	//Apply a material to this plane
+
+	glPushMatrix();
+	glMaterialfv(GL_FRONT, GL_AMBIENT, m_amb);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m_diff);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_spec);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shiny);
+
 	glBegin(GL_TRIANGLES);
 		glColor3f(1, 0, 0);
 		glNormal3fv(normA);
@@ -170,6 +184,8 @@ void createPlane()
 		glVertex3fv(positionB[2]);
 		//Ground plane coordinates, along with the normals
 	glEnd();
+
+	glPopMatrix();
 }
 
 string getModelType(ModelType modelType){
@@ -1321,6 +1337,12 @@ void reshape(int w, int h)
 void lightSpheres()
 {
 	glPushMatrix();
+	glMaterialfv(GL_FRONT, GL_AMBIENT, m_amb_2);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m_diff_2);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_spec_2);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shiny_2);
+
+	glPushMatrix();
 	glTranslatef(light_pos[0],light_pos[1],light_pos[2]);//This translate will be move the sphere around light 1
 	glutSolidSphere(0.5,10,10);//Create the sphere
 	glPopMatrix();
@@ -1329,6 +1351,7 @@ void lightSpheres()
 	glPushMatrix();
 	glTranslatef(light_pos_2[0],light_pos_2[1],light_pos_2[2]);//This translate will be move the sphere around light 2
 	glutSolidSphere(0.5,10,10);
+	glPopMatrix();
 	glPopMatrix();
 }
 
@@ -1420,8 +1443,8 @@ int main(int argc, char** argv)
 
 	initLighting();
 
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
 
 	glutMainLoop();				//starts the event loop
 	return(0);					//return may not be necessary on all compilers
