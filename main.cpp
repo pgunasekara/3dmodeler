@@ -214,42 +214,6 @@ string getTransformType(transformType transformationType){
 			break;
 		}
 	}
-/*
-void recursiveSave(Node *n){
-	if (n->nodeType == group){
-		myfile << "group:{\n";
-		// save ID
-		myfile << "ID:" << n->ID << "," << endl;
-	}else if (n->nodeType == model){
-		vertex3D min=n->hit.minP;
-		vertex3D max=n->hit.maxP;
-		myfile << "model:{\n";
-		// gives number
-		myfile << "modelType:"  << getModelType(n->modelType) << endl;
-		// put materials once pasi gets it
-		myfile << "lowHit" << min.x << "," << min.y << "," << min.z << ")" << endl;
-		myfile << "highHit:(" << max.x << "," << max.y << "," << max.z << ")" << endl;
-		myfile << "Material:" << n->currentMat.current->type << endl;
-	}else if (n->nodeType == transformation){
-		myfile << "transformation:{\n";
-		// gives number
-		myfile << "transformType: "  << getTransformType(n->transformationType) << endl;
-		if (n->transformationType == Rotate){
-			myfile << "vector:(" << n->amount4.w << "," << n->amount4.x << "," << n->amount4.y << "," << n->amount4.z << ")" << endl;
-		}else {
-			//cout << "\t vector: (" << n->amount3.x << "," << n->amount3.y << "," << n->amount3.z << ")" << endl;
-			myfile << "vector:(" << n->amount3.x << "," << n->amount3.y << "," << n->amount3.z << ")" << endl;
-		}
-		// put materials once pasi gets it
-		//myfile << 
-	}
-	for (int i = 0; i < n->children->size(); i++){
-		recursiveSave(n->children->at(i));
-	}
-		myfile << "}\n";
-	return;
-}
-*/
 
 void hitboxHelper(Node *n,Node *hitBoxNode){
 	if (n->ID > 1){
@@ -274,18 +238,6 @@ void applyHitboxes(){
 		hitboxHelper(SG->hitBoxNodes[i]->parent,SG->hitBoxNodes[i]);
 	}
 }
-
-
-/*
-if(n->nodeType == transformation){
-		if (n->transformType == Translate){
-			n->hit.Translate(vec3D(n->amount3.x,n->amount3.y,n->amount3.z));
-		}else if (n->transformType == Translate){
-
-		}
-	}
- */
-
 
 void createModel(string type, string material, vertex3D min, vertex3D max){
 	if (type == "Cube"){
