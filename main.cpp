@@ -158,6 +158,42 @@ void recursiveSave(Node *n){
 }
 */
 
+void hitboxHelper(Node *n,Node *hitBoxNode){
+	if (n->ID > 1){
+		for (int i = 0; i < n->children->size();i++){
+			hitboxHelper(n->parent,hitBoxNode);
+		}
+	}
+	if (n->nodeType == transformation){
+		if (n->transformationType == Translate){
+			hitBoxNode->hit.Translate(vec3D(n->amount3.x,n->amount3.y,n->amount3.z));
+		}else if (n->transformationType == Scale){
+			hitBoxNode->hit.Scale(vec3D(n->amount3.x,n->amount3.y,n->amount3.z));
+		}else if (n->transformationType == Rotate){
+			hitBoxNode->hit.Rotate(quaternion(n->amount4.w,n->amount4.x,n->amount4.y,n->amount4.z));
+		}
+	}
+	return;
+}
+
+void applyHitboxes(){
+	for (int i = 0; i < SG->hitBoxNodes.size();i++){
+		hitboxHelper(SG->hitBoxNodes[i]->parent,SG->hitBoxNodes[i]);
+	}
+}
+
+
+/*
+if(n->nodeType == transformation){
+		if (n->transformType == Translate){
+			n->hit.Translate(vec3D(n->amount3.x,n->amount3.y,n->amount3.z));
+		}else if (n->transformType == Translate){
+
+		}
+	}
+ */
+
+
 void createModel(string type, string material, vertex3D min, vertex3D max){
 	if (type == "Cube"){
 		SG->insertChildNodeHere(new NodeModel(Cube,min,max));
@@ -181,7 +217,6 @@ void createModel(string type, string material, vertex3D min, vertex3D max){
 	cout << type << endl;
 	SG->goToRoot();
 	SG->currentNode = SG->currentNode->children->at(0);
-	//SG->currentNode->hit.updateHitbox(min,max);
 }
 
 void insertTranslation(float x, float y, float z){
@@ -318,6 +353,10 @@ void recursiveLoad(){
 		infile.close();
 	}
 	else cout << "Unable to open file"; 
+	for (int i = 0; i < SG->hitBoxNodes.size(); i++){
+		cout << SG->hitBoxNodes.at(i)->ID << endl;
+	}
+	applyHitboxes();
 }
 
 void saveEverything(){
