@@ -17,6 +17,7 @@ Then switch current node based on the ID*/
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
 #include <math.h>
 #include "Math/camera.h"
 #include "Math/Hitbox.h"
@@ -36,6 +37,7 @@ Then switch current node based on the ID*/
 #include <iostream>
 #include <sstream>
 using namespace std;
+using std::string;
 
 float mouseX,mouseY,globalW,globalH;
 bool buttonDown = false;
