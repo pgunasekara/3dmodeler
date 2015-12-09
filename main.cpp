@@ -47,8 +47,8 @@ float angle = 0.005f;
 bool PlaneExist = false;
 Hitbox *hit;
 Camera camera;
-ofstream myfile ("save.txt");
-ifstream infile ("save.txt");
+string fileNameLoad;
+string fileNameSave;
 
 //node ids
 int masterID = 0;
@@ -80,6 +80,88 @@ float m_diff[] = {0.07568, 0.61424, 0.07568, 1.0};
 float m_spec[] = {0.633, 0.727811, 0.633, 1.0};
 float shiny = 0.6;
 //LIGHTING
+
+//Position of the ground plane
+GLfloat positionA[3][3] = {{-25.0f, -0.5f, -25.0f}, {25.0f, -0.5f, -25.0f}, {25.0f, -0.5f, 25.0f}};
+GLfloat positionB[3][3] = {{25.0f, -0.5f, 25.0f},{-25.0f, -0.5f, 25.0f},{-25.0f, -0.5f, -25.0f}};
+
+//Direction vectors for the 2 ground plane triangles
+float vecA[3], vecB[3], vecC[3], vecD[3]; 
+GLfloat normA[3], normB[3];
+bool calculated = false;
+
+
+ofstream myfile;
+
+void createPlane()
+{
+	//Plane coordinates, down by 0.5 units
+	//The plane will be 50x50
+	//Triangle 1
+	//-25, -0.5, -25
+	//25, -0.5, -25
+	//25, -0.5, 25
+
+	//Triangle 2
+	//25, -0.5, 25
+	//-25, -0.5, 25
+	//-25, -0.5, -25
+
+	//Calculate A and B for A dot B to get the normal of the plane
+	//Only need to calculate this once, therefore a boolean is used to control this
+	if(calculated == false)
+	{
+		calculated = true;
+		//Triangle 1
+		//A is vertex 1 and vertex 2
+		//B is vertex 1 and vertex 3
+		vecA[0] = positionA[1][0] - positionA[0][0];
+		vecA[1] = positionA[1][1] - positionA[0][1];
+		vecA[2] = positionA[1][2] - positionA[0][2];
+
+		vecB[0] = positionA[2][0] - positionA[0][0];
+		vecB[1] = positionA[2][1] - positionA[0][1];
+		vecB[2] = positionA[2][2] - positionA[0][2];
+
+		//Triangle 2
+		//C is vertex 1 and vertex 2
+		//D is vertex 1 and vertex 3
+		vecC[0] = positionB[1][0] - positionB[0][0];
+		vecC[1] = positionB[1][1] - positionB[0][1];
+		vecC[2] = positionB[1][2] - positionB[0][2];
+
+		vecD[0] = positionB[2][0] - positionB[0][0];
+		vecD[1] = positionB[2][1] - positionB[0][1];
+		vecD[2] = positionB[2][2] - positionB[0][2];
+
+		//Calcuate Cross product between vecA and vecB to get the normal of the FIRST Triangle
+		normA[0] = vecA[1]*vecB[2] - vecA[2]*vecB[1];
+		normA[1] = vecA[2]*vecB[0] - vecA[0]*vecB[2];
+		normA[2] = vecA[0]*vecB[1] - vecA[1]*vecB[0];
+
+		//Calcuate Cross product between vecA and vecB to get the 
+		//normal of the second Triangle
+		normB[0] = vecC[1]*vecD[2] - vecC[2]*vecD[1];
+		normB[1] = vecC[2]*vecD[0] - vecC[0]*vecD[2];
+		normB[2] = vecC[0]*vecD[1] - vecC[1]*vecD[0];
+	}
+
+	glBegin(GL_TRIANGLES);
+		glNormal3fv(normA);
+		glVertex3fv(positionA[0]);
+		glVertex3fv(positionA[1]);
+		glVertex3fv(positionA[2]);
+		//Ground plane coordinates, along with the normals
+	glEnd();
+
+	glBegin(GL_TRIANGLES);
+		glNormal3fv(normB);
+		glVertex3fv(positionB[0]);
+		glVertex3fv(positionB[1]);
+		glVertex3fv(positionB[2]);
+		//Ground plane coordinates, along with the normals
+	glEnd();
+}
 
 string getModelType(ModelType modelType){
 	switch (modelType){
@@ -292,6 +374,7 @@ string parseType(string line){
 }
 
 void recursiveLoad(){
+	ifstream infile (fileNameLoad);
 	string line;
 	if (infile.is_open()){
 		getline(infile,line);
@@ -369,6 +452,8 @@ void saveEverything(){
 	recursiveSave(SG->currentNode);
 }
 void saveState(){
+	//ofstream myfile (fileNameSave);
+	myfile = ofstream(fileNameSave);
 	if (myfile.is_open()){
 		myfile << "{" << endl;
 		saveEverything();
@@ -1051,12 +1136,16 @@ void keyboard(unsigned char key, int x, int y)
 			}
 			break;
 		case 's':
-			printf("saved\n");
+			printf("Enter a filename to save: ");
+			cin >> fileNameSave;
 			saveState();
+			printf("\nSaved\n");
 			break;
 		case 'l':
-			printf("loaded\n");
+			printf("Enter a filename to load: \n");
+			cin >> fileNameLoad;
 			recursiveLoad();
+			printf("\nLoaded\n");
 			break;
 
 		//CHANGE THE MATERIAL
@@ -1150,6 +1239,7 @@ void display(void)
 
 	//draw the sceneGraph
 	drawAxis();
+	createPlane();
 	SG->draw();
 	//if (PlaneExist){
 	//	hit->draw();
