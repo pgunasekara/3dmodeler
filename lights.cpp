@@ -162,4 +162,4 @@ cout << "COMP SCI 3GC3 Assignment 3: Simple 3D Modeling System\n"
 	<< "\n\t(UPPERCASE)(Use ALT to go reverse) V: y-axis, B: x-axis, N: z-axis"
 	<< "\n\t]:Toggle ON/OFF LIGHT 1"
 	<< "\n\nSwitching Materials:"
-	<< "\n\t(UPPERCASE) T: Ruby, Y:Emerald, U: Copper, I: Black Rubber, O: Jade"
+	<< "\n\t(UPPERCASE) T: Ruby, Y:Emerald, U: Copper, I: Black Rubber, O: Jade";

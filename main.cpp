@@ -227,7 +227,7 @@ void hitboxHelper(Node *n,Node *hitBoxNode){
 		}else if (n->transformationType == Scale){
 			hitBoxNode->hit.Scale(vec3D(n->amount3.x,n->amount3.y,n->amount3.z));
 		}else if (n->transformationType == Rotate){
-			hitBoxNode->hit.Rotate(quaternion(n->amount4.w,n->amount4.x,n->amount4.y,n->amount4.z));
+			//hitBoxNode->hit.Rotate(quaternion(n->amount4.w,n->amount4.x,n->amount4.y,n->amount4.z));
 		}
 	}
 	return;
@@ -961,7 +961,7 @@ void keyboard(unsigned char key, int x, int y)
 					}
 				}
 
-				SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
+				//SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
 
 
 				//Now we need to link nodes below it to the new node
@@ -1012,7 +1012,7 @@ void keyboard(unsigned char key, int x, int y)
 					}
 				}
 
-				SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
+				//SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
 
 
 
@@ -1064,7 +1064,7 @@ void keyboard(unsigned char key, int x, int y)
 					}
 				}
 
-				SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
+				//SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
 
 				//Now we need to link nodes below it to the new node
 				for(int i = 0; i < SG->currentNode->children->size(); i++)
