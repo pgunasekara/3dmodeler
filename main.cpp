@@ -34,6 +34,7 @@ Then switch current node based on the ID*/
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 using namespace std;
 
 float mouseX,mouseY,globalW,globalH;
@@ -45,6 +46,7 @@ bool PlaneExist = false;
 Hitbox *hit;
 Camera camera;
 ofstream myfile ("save.txt");
+ifstream infile ("save.txt");
 
 //node ids
 int masterID = 0;
@@ -156,33 +158,84 @@ void recursiveSave(Node *n){
 }
 */
 
+void createModel(string type, string material, vertex3D min, vertex3D max){
+
+	if (type == "Cube"){
+		SG->insertChildNodeHere(new NodeModel(Cube));
+		SG->currentNode->currentMat.fromString(material);
+	}
+	else if (type == "Sphere"){
+		SG->insertChildNodeHere(new NodeModel(Sphere));
+		SG->currentNode->currentMat.fromString(material);
+	}else if (type == "Cone"){
+		SG->insertChildNodeHere(new NodeModel(Cone));
+		SG->currentNode->currentMat.fromString(material);
+	}
+	else if (type == "Torus"){
+		SG->insertChildNodeHere(new NodeModel(Torus));
+		SG->currentNode->currentMat.fromString(material);
+	}
+	else if (type == "Tetrahedron"){
+		SG->insertChildNodeHere(new NodeModel(Tetrahedron));
+		SG->currentNode->currentMat.fromString(material);
+	}
+	cout << type << endl;
+	SG->goToRoot();
+	SG->currentNode = SG->currentNode->children->at(0);
+	SG->currentNode->hit.updateHitbox(min,max);
+}
+
+void insertTranslation(float x, float y, float z){
+	//printf("%f %f %f\n", x,y,z);
+	translation.x = x;
+	translation.y = y;
+	translation.z = z;
+	SG->insertChildNodeHere(new NodeGroup());
+	SG->insertChildNodeHere(new NodeTransform(Translate,translation));
+}
+
+void insertRotation(float w,float x, float y, float z){
+	//printf("%f %f %f %f\n",w,x,y,z);
+	rotation.x = x;
+	rotation.y = y;
+	rotation.z = z;
+	rotation.w = w;
+	SG->insertChildNodeHere(new NodeGroup());
+	SG->insertChildNodeHere(new NodeTransform(Rotate,rotation));
+}
+
+void insertScale(float x, float y, float z){
+	//printf("%f %f %f\n", x,y,z);
+	translation.x = x;
+	translation.y = y;
+	translation.z = z;
+	SG->insertChildNodeHere(new NodeGroup());
+	SG->insertChildNodeHere(new NodeTransform(Scale,translation));
+}
+
 void recursiveSave(Node *n){
 	if (n->nodeType == group){
-		myfile << "group:{\n";
-		// save ID
-		myfile << "ID:" << n->ID << "," << endl;
+		myfile << "group{\n";
 	}else if (n->nodeType == model){
 		vertex3D min=n->hit.minP;
 		vertex3D max=n->hit.maxP;
-		myfile << "model:{\n";
-		// gives number
-		myfile << "modelType:"  << getModelType(n->modelType) << endl;
-		// put materials once pasi gets it
-		myfile << "lowHit" << min.x << "," << min.y << "," << min.z << ")" << endl;
-		myfile << "highHit:(" << max.x << "," << max.y << "," << max.z << ")" << endl;
-		myfile << "Material:" << n->currentMat.current->type << endl;
+		myfile << "model{\n";
+		// gets model type
+		myfile << getModelType(n->modelType) << endl;
+		// get material type
+		myfile << n->currentMat.current->type << endl;
+		// get min and max vals
+		myfile << min.x << "," << min.y << "," << min.z << endl;
+		myfile << max.x << "," << max.y << "," << max.z << endl;
 	}else if (n->nodeType == transformation){
-		myfile << "transformation:{\n";
+		myfile << "transformation{\n";
 		// gives number
-		myfile << "transformType: "  << getTransformType(n->transformationType) << endl;
+		myfile << getTransformType(n->transformationType) << endl;
 		if (n->transformationType == Rotate){
-			myfile << "vector:(" << n->amount4.w << "," << n->amount4.x << "," << n->amount4.y << "," << n->amount4.z << ")" << endl;
+			myfile << n->amount4.w << "," << n->amount4.x << "," << n->amount4.y << "," << n->amount4.z << endl;
 		}else {
-			//cout << "\t vector: (" << n->amount3.x << "," << n->amount3.y << "," << n->amount3.z << ")" << endl;
-			myfile << "vector:(" << n->amount3.x << "," << n->amount3.y << "," << n->amount3.z << ")" << endl;
+			myfile << n->amount3.x << "," << n->amount3.y << "," << n->amount3.z<< endl;
 		}
-		// put materials once pasi gets it
-		//myfile << 
 	}
 	for (int i = 0; i < n->children->size(); i++){
 		recursiveSave(n->children->at(i));
@@ -191,14 +244,81 @@ void recursiveSave(Node *n){
 	return;
 }
 
-void recursiveLoad(/*Node *n*/){
-	string line;
-	ifstream myfile ("save.txt");
-	if (myfile.is_open()){
-		while (getline(myfile,line)){
-			cout << line << '\n';
+string parseType(string line){
+	string ret = "";
+	for (int i = 0; i < line.size(); i++){
+		if(line[i] == '{' || line[i] == '}'){
+			break;
 		}
-		myfile.close();
+		ret += line[i];
+	}	
+	return ret;
+}
+
+void recursiveLoad(){
+	string line;
+	if (infile.is_open()){
+		getline(infile,line);
+		while (getline(infile,line)){
+			//cout << parseType(line) << endl;
+			if(parseType(line) == "group"){
+				// parse group
+				SG->insertChildNodeHere(new NodeGroup());
+			}else if (parseType(line) == "model"){
+				// parse model
+				string type,material;
+				getline(infile,type);
+				getline(infile,material);
+				getline(infile,line);
+				string x,y,z;
+				vertex3D min,max;
+				istringstream iss(line);
+				getline(iss,x,',');
+				getline(iss,y,',');
+				getline(iss,z,',');
+				min = vertex3D(stof(x),stof(y),stof(z));
+				getline(infile,line);
+				istringstream issLine2(line);
+				getline(issLine2,x,',');
+				getline(issLine2,y,',');
+				getline(issLine2,z,',');
+				max = vertex3D(stof(x),stof(y),stof(z));
+				createModel(type,material,min,max);
+			}else if (parseType(line) == "transformation"){
+				getline(infile,line);
+				if (line == "Translate"){
+					getline(infile,line);
+					istringstream iss(line);
+					string x,y,z;
+					getline(iss,x,',');
+					getline(iss,y,',');
+					getline(iss,z,',');
+					insertTranslation(stof(x),stof(y),stof(z));
+				}else if (line == "Rotate"){
+					getline(infile,line);
+					istringstream iss(line);
+					string w,x,y,z;
+					getline(iss,w,',');
+					getline(iss,x,',');
+					getline(iss,y,',');
+					getline(iss,z,',');				
+					insertRotation(stof(w),stof(x),stof(y),stof(z));
+				}else if (line == "Scale"){
+					getline(infile,line);
+					istringstream iss(line);
+					string x,y,z;
+					getline(iss,x,',');
+					getline(iss,y,',');
+					getline(iss,z,',');
+					insertScale(stof(x),stof(y),stof(z));
+				}
+			}else if (parseType(line) == ""){
+				// do nothing
+			}else {
+
+			}
+		}
+		infile.close();
 	}
 	else cout << "Unable to open file"; 
 }
@@ -212,7 +332,7 @@ void saveEverything(){
 }
 void saveState(){
 	if (myfile.is_open()){
-		myfile << "group:{\n";
+		myfile << "{" << endl;
 		saveEverything();
 		myfile.close();
 	}else{

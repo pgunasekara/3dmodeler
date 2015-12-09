@@ -282,8 +282,23 @@ void Hitbox::Rotate(quaternion quat){
 	maxP.rotatePoint(quat.rotationMatrix);
 }
 
-void applyAxesChanges(vec3D transform){
-	// implement maybe ??
+void Hitbox::updateHitbox(vertex3D low, vertex3D high){
+	printf("%f %f %f\n",low.x,low.y,low.z);
+	vertex3D v1 = vertex3D(low.x,low.y,high.z);
+	vertex3D v2 = vertex3D(high.x,low.y,high.z);
+	vertex3D v3 = vertex3D(high.x,high.y,high.z);
+	vertex3D v4 = vertex3D(low.x,high.y,high.z);
+	vertex3D v5 = vertex3D(low.x,low.y,low.z);
+	vertex3D v6 = vertex3D(high.x,low.y,low.z);
+	vertex3D v7 = vertex3D(high.x,high.y,low.z);
+	vertex3D v8 = vertex3D(low.x,high.y,low.z);
+
+	Planes[0] = new Plane(v1,v2,v3,v4,true,true,false); // front face
+	Planes[1] = new Plane(v5,v6,v7,v8,true,true,false); // back face
+	Planes[2] = new Plane(v4,v3,v7,v8,true,false,true); // top face
+	Planes[3] = new Plane(v1,v2,v6,v5,true,false,true); // bottom face
+	Planes[4] = new Plane(v2,v6,v7,v3,false,true,true); // right face
+	Planes[5] = new Plane(v1,v5,v8,v4,false,true,true); // left face
+	minP = vertex3D(low.x,low.y,low.z);
+	maxP = vertex3D(high.x,high.y,high.z);
 }
-
-

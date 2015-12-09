@@ -169,27 +169,11 @@ bool SceneGraph::Intersect(int x, int y){
 			printf("ID FOUND\n");
 			hitBoxNodes.at(i)->current = true;
 			currentNode = hitBoxNodes.at(i);
-		}else {
-			printf("miss\n");
+			printf("%i\n",hitBoxNodes.at(i)->ID);
+			printf("%i\n",hitBoxNodes.at(i)->modelType);
+
 		}
 	}
-
-	/* check if sphere or box hitbox
-	if (hit->Intersect(near,distance)){
-		printf("hit\n");
-	}else {
-		printf("miss\n");
-	}*/
-
-	/*vec3D Ray = vec3D(distance.dot(distance),near.dot(distance)*2.0,near.dot(near) - 1);
-	
-	if (hit->IntersectSphere(Ray)){
-		printf("hit\n");
-
-	}else {
-		printf("miss\n");
-	}*/
-
 	return false;
 
 }

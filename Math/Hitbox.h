@@ -32,6 +32,7 @@ public:
 	void Scale(vec3D transform);
 	void Translate(vec3D transform);
 	void Rotate(quaternion transform);
+	void updateHitbox(vertex3D minP, vertex3D maxP);
 
 	vertex3D minP,maxP;
 	vec3D xaxis,yaxis,zaxis;

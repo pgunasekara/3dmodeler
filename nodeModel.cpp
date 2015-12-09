@@ -56,9 +56,6 @@ void NodeModel::nodeSpecificCodeDown(){
 	case Cube:
 		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
 		glutSolidCube(1);
-		/*if (current){	
-			hit.draw();
-		}*/
 		break;
 	case Cone:
 		hit = Hitbox(vertex3D(-0.5,-0.5,-0.5), vertex3D(0.5,0.5,0.5), ID);
