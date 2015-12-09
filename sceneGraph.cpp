@@ -155,10 +155,19 @@ bool SceneGraph::Intersect(int x, int y){
 	far.update(finish);
 	distance = (far - near).normalize();
 
+	double A,B,C;
+	A = distance.dot(distance);
+	B = near.dot(distance);
+	B = B*2.0;
+	C = near.dot(near);
+
 	int ID_tmp;
 	for(int i = 0; i < hitBoxNodes.size(); i++)
 	{
 		ID_tmp = hitBoxNodes.at(i)->hit.Intersect(near,distance);
+		if (ID_tmp == -1){
+			ID_tmp = hitBoxNodes.at(i)->hit.IntersectSphere(vec3D(A,B,C));
+		}
 		if(ID_tmp != -1)
 		{
 			for(int j = 0; j < hitBoxNodes.size(); j++)
