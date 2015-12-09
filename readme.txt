@@ -13,7 +13,9 @@ Bonus Features Implemented:
 		-The user can both fly around the scene and control the camera rotation with the mouse
 
 Known Issues:
+	Sometimes deleting an object may not automatically select a deselected node.
 
+	When Changing materials, you cannot change the material of the first node without first changing the material of the second node added. I'm not entirely sure why this happens. Changing materials works perfectly fine after you change any other node before the first one.
 
 Sources:
 	Material Values: http://devernay.free.fr/cours/opengl/materials.html

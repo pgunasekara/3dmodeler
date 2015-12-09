@@ -4,6 +4,9 @@
 #include <string>
 using namespace std;
 
+//Class to hold the materials and switch between them
+
+
 typedef struct customMaterial
 {
 	string type;

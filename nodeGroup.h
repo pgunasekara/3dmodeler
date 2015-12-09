@@ -3,9 +3,11 @@
 
 #include "node.h"
 
-class NodeGroup: public Node{
+//Node group
+class NodeGroup: public Node
+{
 public:
-	NodeGroup();	//constructor
+	NodeGroup();
 
 	virtual void nodeSpecificCodeDown();
 	virtual void nodeSpecificCodeUp();

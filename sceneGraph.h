@@ -1,6 +1,8 @@
 #ifndef __SCENEGRAPH_H__	//guard against cyclic dependancy
 #define __SCENEGRAPH_H__
 
+//Header file for the SceneGraph
+
 #include "node.h"
 #include "nodeModel.h"
 #include "Math/math3D.h"

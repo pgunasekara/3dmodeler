@@ -2,6 +2,7 @@
 #include <string>
 using namespace std;
 
+//The constructor will define all the materials
 cMaterial::cMaterial()
 {
 	/*emerald = {
@@ -151,13 +152,14 @@ cMaterial::~cMaterial()
 	//delete current;
 }
 
-
+//Switch the current material on an object to something different
 void cMaterial::toRuby(){current = &ruby;}
 void cMaterial::toBlackRubber(){current = &blackRubber;}
 void cMaterial::toJade(){current = &jade;}
 void cMaterial::toEmerald(){current = &emerald;}
 void cMaterial::toCopper(){current = &copper;}
 
+//Switch from a string input
 void cMaterial::fromString(string arg){
 		if(arg == "ruby"){
 			current = &ruby;

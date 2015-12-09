@@ -14,8 +14,9 @@
 #include "Math/math3D.h"
 
 
-
-NodeModel::NodeModel(ModelType whatType){	//constructor
+//Constructor for a regular model node
+NodeModel::NodeModel(ModelType whatType)
+{
 	nodeType = model;
 	modelType = whatType;
 	isDrawable = true;
@@ -41,7 +42,9 @@ NodeModel::NodeModel(ModelType whatType){	//constructor
 	method2 = false;
 }
 
-NodeModel::NodeModel(ModelType whatType,vertex3D min,vertex3D max){	//constructor
+//Constructor for model node when loading from a saved file that will reset the hitboxes
+NodeModel::NodeModel(ModelType whatType,vertex3D min,vertex3D max)
+{
 	nodeType = model;
 	modelType = whatType;
 	isDrawable = true;
@@ -69,9 +72,10 @@ NodeModel::NodeModel(ModelType whatType,vertex3D min,vertex3D max){	//constructo
 	method2 = true;
 }
 
-//as the node moves down through it, we want to perform down action
-//which in this case means drawing the model
+
+//Once the node is created, insert the command to draw the actual object
 void NodeModel::nodeSpecificCodeDown(){
+	//material values for the current object
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, currentMat.current->ambient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, currentMat.current->diffuse);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, currentMat.current->specular);

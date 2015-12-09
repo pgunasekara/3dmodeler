@@ -1,9 +1,18 @@
-/*TODO
+/*
+COMP SCI 3GC3 - Assignment 3
+December 11 , 2015
+Completed in a group, submitted on gunasepi's SVN trunk
+Group:
+	Name: Pasindu Gunasekara
+		MacID: gunasepi
+		StudentNumber: 001412155
 
-When clicked, switch currentNode
+	Name: Roberto Temelkovski
+		MacID: temelkr
+		Student Number: 001418731
 
-With ray casting, once an object is selected, search for it's ID
-Then switch current node based on the ID*/
+Description: Simple 3D modeling software created in OpenGL and C++
+*/
 
 #ifdef __APPLE__
 #  include <OpenGL/gl.h>
@@ -15,75 +24,89 @@ Then switch current node based on the ID*/
 #  include <GL/freeglut.h>
 #endif
 
+//Built in library includes for various functions such as I/O, vectors, stringstreams, and Math
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
 #include <math.h>
-#include "Math/camera.h"
-#include "Math/Hitbox.h"
-#include "structs.h"
-#include "Math/math3D.h"
-
-#include "materials.h"
-//sceneGraph
-#include "sceneGraph.h"
-#include "nodeGroup.h"
-#include "nodeModel.h"
-
-#include "nodeTransform.h"
 #include <vector>
 #include <fstream>
 #include <iostream>
 #include <sstream>
+
+#include "Math/camera.h"
+#include "Math/Hitbox.h"
+#include "structs.h"
+#include "Math/math3D.h"
+#include "materials.h"
+#include "sceneGraph.h"
+#include "nodeGroup.h"
+#include "nodeModel.h"
+#include "nodeTransform.h"
+
 using namespace std;
 
+//Variables used for camera
 float mouseX,mouseY,globalW,globalH;
 bool PlaneExist = false;
 Hitbox *hit;
 Camera camera;
+
+//File names that are saved or loaded
 string fileNameLoad;
 string fileNameSave;
 
-//node ids
+//Master ID for nodes
 int masterID = 0;
 
+//Various vectors used for transformation nodes
 Vector3D ip;
 Vector3D translation;
 Vector4D rotation; 
 Vector3D scale;
 
+//this function is used to assign an ID to a node
 int getID()
 {
 	return masterID++;
 }
+
 // for the unprojection
 double* start = new double[3];
 double* finish = new double[3];
 
+//The main Scene Graph
 SceneGraph *SG;
 
 
+
+
 /*LIGHTING*/
-//float light_pos[] = {0.0f, 10.0f, 0.0f, 1.0f};
-float amb0[4] = {1, 1, 1, 1};
-float diff0[4] = {1, 1, 1, 1};
-float spec0[4] = {1, 1, 1, 1};
-
-float m_amb[] = {0.25, 0.25, 0.25, 1.0};
-float m_diff[] = {0.4, 0.4, 0.4, 1.0};
-float m_spec[] = {0.774597, 0.774597, 0.774597, 1.0};
-float shiny = 0.6;
-//LIGHTING
-
+//Positions of the two lights
 float light_pos[] = {10.0f, 5.0f, 10.0f, 1.0f};//This is the position for the first light
 
 float light_pos_2[] = {-10.0f, 5.0f, -10.0f, 1.0f};//This is the position for the second light
 
+//Settings for the first light
+float amb0[4] = {1, 1, 1, 1};
+float diff0[4] = {1, 1, 1, 1};
+float spec0[4] = {1, 1, 1, 1};
+
+//Material for the ground plane (CHROME)
+float m_amb[] = {0.25, 0.25, 0.25, 1.0};
+float m_diff[] = {0.4, 0.4, 0.4, 1.0};
+float m_spec[] = {0.774597, 0.774597, 0.774597, 1.0};
+float shiny = 0.6;
+
+//Settings for the second Light
 float m_amb_2[] = {0.1, 0.18725, 0.1745, 1.0};
 float m_diff_2[] = {0.396, 0.74151, 0.69102, 1.0};
 float m_spec_2[] = {0.297254, 0.30829, 0.306678, 1.0};
 float shiny_2 = 0.1;
 
+//Booleans used to check whether the lights are currently on or off
+bool light_0_toggle = true;
+bool light_1_toggle = true;
 
 //Position of the ground plane
 GLfloat positionA[3][3] = {{-25.0f, -0.5f, -25.0f}, {25.0f, -0.5f, -25.0f}, {25.0f, -0.5f, 25.0f}};
@@ -94,12 +117,11 @@ float vecA[3], vecB[3], vecC[3], vecD[3];
 GLfloat normA[3], normB[3];
 bool calculated = false;
 
-bool light_0_toggle = true;
-bool light_1_toggle = true;
-
-
+//Global output stream variable for creating files
 ofstream myfile;
 
+
+//Function used to create planes
 void createPlane()
 {
 	//Plane coordinates, down by 0.5 units
@@ -154,7 +176,6 @@ void createPlane()
 	}
 
 	//Apply a material to this plane
-
 	glPushMatrix();
 	glMaterialfv(GL_FRONT, GL_AMBIENT, m_amb);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m_diff);
@@ -178,6 +199,7 @@ void createPlane()
 }
 
 // put in a model type, get it as a string
+//Used for File I/O
 string getModelType(ModelType modelType){
 	switch (modelType){
 		case Sphere:
@@ -436,6 +458,8 @@ void saveState(){
 	}
 }
 
+
+//The mouse function will be used for Ray picking using the intersection function in Scene Graph
 void mouse(int button, int state, int x, int y){
 	if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN){
 		SG->Intersect(x,y);
@@ -443,6 +467,7 @@ void mouse(int button, int state, int x, int y){
 	glutPostRedisplay();
 }
 
+//Initializing the 2 lights and their settings
 void initLighting()
 {
 	glEnable(GL_LIGHTING);
@@ -457,33 +482,37 @@ void initLighting()
 	glLightfv(GL_LIGHT0, GL_SPECULAR, spec0);
 }
 
-//function which will populate a sample graph 
+
+//This will create the initial Scene Graph
+//Root will always be created when the scene graph is initialized, therefore a Top group node is inserted
+//The top group node will be used to remove everything from the scene.
 void initGraph()
 {
-	//Initial Transformation node
-	//This is node 1, every time a node is created the masterId will incremenet by 2
 	//NODE 0 is Root
-		
+	//Node 1 is the top group node, which will be used to delete the entire scene when nessacary
+			
 	//DELETE THE ENTIRE GROUP NODE, WHEN CLEARING THE SCENE
 	//The masterID for this first node will always be 1
-	//When clearing, reset masterID to 0
+	//When clearing, reset masterID to 1
 	SG->insertChildNodeHere(new NodeGroup());
-	printf("\nFIRST NODE %i\n", SG->currentNode->nodeType);
+	//printf("\nFIRST NODE %i\n", SG->currentNode->nodeType);
 }
 
+//Reset the entire scene graph by deleting all the nodes by calling their destructors
 void resetGraph(){
 	SG->deleteScene();
 	SG->hitBoxNodes.clear();
 	masterID = 1;
+	//Reinitialize the graph to create the root node
 	initGraph();
 }
 
-//callbacks
+//Keyboard function which will be used for Controlling everything in the program
 void keyboard(unsigned char key, int x, int y)
 {
-	
 	switch (key)
 	{
+		//UPPERCASE WASD is used to move the camera along the x and z axis
 		case 'W':
 			camera.Move(FORWARD);
 			glutPostRedisplay();
@@ -500,6 +529,7 @@ void keyboard(unsigned char key, int x, int y)
 			camera.Move(RIGHT);
 			glutPostRedisplay();
 			break;
+		//UPPERCASE Q and E are used to move the camera up and down the y axis
 		case 'Q':
 			camera.Move(DOWN);
 			glutPostRedisplay();
@@ -508,17 +538,19 @@ void keyboard(unsigned char key, int x, int y)
 			camera.Move(UP);
 			glutPostRedisplay();
 			break;
+		//Quit with q
 		case 'q':
 		case 27:
 			exit (0);
 			break;
 		case 'z':
 			//CUBE
-			//Go to the top group node
+			//Set current to false so that the old node is not still selected
 			if(SG->currentNode->nodeType == model)
 			{
 				SG->currentNode->current = false;
 			}
+			//Go to top group node
 			while(SG->currentNode->ID > 1)
 			{
 				SG->goToParent();
@@ -529,11 +561,14 @@ void keyboard(unsigned char key, int x, int y)
 			ip.y = 0;
 			ip.z = 0;
 			//SG->insertChildNodeHere(new NodeGroup());
+			//Create the initial transform at 0,0,0
 			SG->insertChildNodeHere(new NodeTransform(Translate, ip));
-			
+			//Add the cube
 			SG->insertChildNodeHere(new NodeModel(Cube));
 			PlaneExist = true;
 			break;
+		
+		//The rest of these cases do the same thing for the other 4 objects
 		case 'x':
 			//SPHERE
 			//Go to the top group node
@@ -605,11 +640,14 @@ void keyboard(unsigned char key, int x, int y)
 			break;
 
 
+		/*The process for all the transformations are the same, I have commented the first case, 
+		the only difference is that for rotation a vector 4D is used with an angle*/
 		//---------------TRANSLATION-------------------//
 		case 'y':
 			if (PlaneExist){
 				//Modify Transformation Node
 				
+				//If on a model, go to it's transformation parent
 				while(SG->currentNode->nodeType == model)
 					SG->goToParent();
 
@@ -617,6 +655,7 @@ void keyboard(unsigned char key, int x, int y)
 
 				int mod = glutGetModifiers();
 				
+				//Only want to move along y axis
 				if(mod == GLUT_ACTIVE_ALT)
 					translation.y = -0.05;
 				else
@@ -624,8 +663,10 @@ void keyboard(unsigned char key, int x, int y)
 				
 				translation.z = 0;
 
+				//Create a tempNode so that we can delete and relink
 				NodeTransform *tempNode = new NodeTransform(Translate, translation);
 
+				//Find the hitbox
 				int count;
 				for(count = 0; count < SG->hitBoxNodes.size(); count++)
 				{
@@ -635,6 +676,7 @@ void keyboard(unsigned char key, int x, int y)
 					}
 				}
 
+				//Translate the hitbox 
 				SG->hitBoxNodes.at(count)->hit.Translate(vec3D(translation.x, translation.y, translation.z));
 
 
@@ -649,9 +691,12 @@ void keyboard(unsigned char key, int x, int y)
 				
 				SG->currentNode->children->clear();
 
+				//Add a push and pop matrix to make sure the translation is correct
 				SG->insertChildNodeHere(new NodeGroup());
+				//Move the child node back and link it
 				SG->insertChildNodeHere(tempNode);
 
+				//Redraw the nodes with the new transform
 				SG->draw();
 			}
 			break;
@@ -1046,7 +1091,6 @@ void keyboard(unsigned char key, int x, int y)
 
 		case 'j':
 			//delete the current Node
-			//TODO, FIRST select the node to delete!
 			if (PlaneExist){
 			//Make sure that the node being deleted is a NodeModel
 				if(SG->currentNode->nodeType == model)
@@ -1054,7 +1098,11 @@ void keyboard(unsigned char key, int x, int y)
 					SG->deleteThisNode();
 				}
 			}
+			//Afterwards, select the next hitbox
+
 			break;
+
+		//File I/O
 		case 's':
 			printf("Enter a filename to save: ");
 			cin >> fileNameSave;
@@ -1071,6 +1119,7 @@ void keyboard(unsigned char key, int x, int y)
 			printf("\nLoaded\n");
 			break;
 
+		//Changing materials
 		case 'T':
 			if(SG->currentNode->nodeType == model)
 			{
@@ -1104,7 +1153,7 @@ void keyboard(unsigned char key, int x, int y)
 
 		//Lighting Controls		
 		//LIGHT 1 SECTION
-		case 'Z': //y axis
+		case ',': //y axis
 		{
 			int mod = glutGetModifiers();
 			if(mod == GLUT_ACTIVE_ALT)
@@ -1114,7 +1163,7 @@ void keyboard(unsigned char key, int x, int y)
 			break;
 		}
 
-		case 'X':	//x-axis
+		case '.':	//x-axis
 		{
 			int mod = glutGetModifiers();
 			if(mod == GLUT_ACTIVE_ALT)
@@ -1124,7 +1173,7 @@ void keyboard(unsigned char key, int x, int y)
 			break;
 		}
 
-		case 'C':	//z-axis
+		case '/':	//z-axis
 		{
 			int mod = glutGetModifiers();
 			if(mod == GLUT_ACTIVE_ALT)
@@ -1135,7 +1184,7 @@ void keyboard(unsigned char key, int x, int y)
 		}
 
 		//LIGHT 2 SECTION
-		case 'V': //y axis
+		case '-': //y axis
 		{
 			int mod = glutGetModifiers();
 			if(mod == GLUT_ACTIVE_ALT)
@@ -1145,7 +1194,7 @@ void keyboard(unsigned char key, int x, int y)
 			break;
 		}
 
-		case 'B':	//x-axis
+		case '=':	//x-axis
 		{
 			int mod = glutGetModifiers();
 			if(mod == GLUT_ACTIVE_ALT)
@@ -1155,7 +1204,7 @@ void keyboard(unsigned char key, int x, int y)
 			break;
 		}
 
-		case 'N':	//z-axis
+		case '\\':	//z-axis
 		{
 			int mod = glutGetModifiers();
 			if(mod == GLUT_ACTIVE_ALT)
@@ -1194,7 +1243,7 @@ void keyboard(unsigned char key, int x, int y)
 			}
 			break;
 
-		
+		//Resetting the graph
 		case 'r':
 			resetGraph();
 			break;
@@ -1202,6 +1251,9 @@ void keyboard(unsigned char key, int x, int y)
 	glutPostRedisplay();
 }
 
+//Init function
+//Creates the scene graph
+//Calls the first initGraph();
 void init(void)
 {	
 	GLuint id = 1;
@@ -1215,6 +1267,8 @@ void init(void)
 	initGraph();
 }
 
+//Used with GLUTReshape Func
+//Sets Initial Camera POS
 void reshape(int w, int h)
 {
 	glEnable(GLUT_DEPTH);
@@ -1237,6 +1291,8 @@ void reshape(int w, int h)
 }
 
 
+//Draws the Spheres around the lights
+//And sets the materials of the objects
 void lightSpheres()
 {
 	glPushMatrix();
@@ -1258,6 +1314,9 @@ void lightSpheres()
 	glPopMatrix();
 }
 
+//Display Function
+//Draws all nodes, draws planes, and spheres around the lights
+//Then Swaps buffers
 void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1269,6 +1328,7 @@ void display(void)
 	glutSwapBuffers();
 }
 
+//Passive function, used for click and drag to look around
 void passive(int x,int y){
 	if (x < globalW && y < globalH){
 		if ((x - mouseX) > 0){
@@ -1290,21 +1350,22 @@ void passive(int x,int y){
 	glutPostRedisplay();
 }
 
-/* main function - program entry point */
+//Main Function
 int main(int argc, char** argv)
 {
-	cout << "COMP SCI 3GC3 Assignment 3: Simple 3D Modeling System\n"
+	//cout the instructions
+	cout << "\n\nCOMP SCI 3GC3 Assignment 3: Simple 3D Modeling System\n"
 		<< "\tPasindu Gunasekara(001412155, gunasepi), Roberto Temelkovski(001418731 ,temelkr)\n\n"
-		<< "\t\tNOTE: Light 2 is initially DISABLED, to enable use the hotkeys below.\n\n"
+		//<< "\t\tNOTE: Light 2 is initially DISABLED, to enable use the hotkeys below.\n\n"
 		<< "Hotkeys\n"
 		<< "-------\n"
 		<< "Click on an object to pick it using Ray picking\n"
 		<< "Add Objects to Scene\n"
 		<< "\tz: CUBE\n\tx: SPHERE\n\tc: CONE\n\tb: TORUS\n\tm: TETRAHEDRON\n\n"
 		<< "Transforming currently selected object\n"
-		<< "\tTranslate(by 0.05 units per press) - t: x-axis\ty: y-axis\tu: z-axis\n\tNOTE: Use ALT modifier to go in the reverse direction with the same keys.\n"
-		<< "\tRotate(by 1 degree per press) - i: x-axis\to: y-axis\tp: z-axis\n\tNOTE: Use ALT modifier to go in the reverse direction with the same keys.\n"
-		<< "\tScale(by 0.5x) - g: x-axis\th: y-axis\tj: z-axis\n\tNOTE: Use ALT modifier to go in the reverse direction with the same keys.\n"
+		<< "\tTranslate(by 0.05 units per press) - t: x-axis\ty: y-axis\tu: z-axis\n\t\tNOTE: Use ALT modifier to go in the reverse direction with the same keys.\n"
+		<< "\tRotate(by 1 degree per press) - i: x-axis\to: y-axis\tp: z-axis\n\t\tNOTE: Use ALT modifier to go in the reverse direction with the same keys.\n"
+		<< "\tScale(by 0.5x) - g: x-axis\th: y-axis\tj: z-axis\n\t\tNOTE: Use ALT modifier to go in the reverse direction with the same keys.\n"
 		<< "\n\nr: Reset Scene"
 		<< "\ns: Save current scene to file name entered in console"
 		<< "\nl: load from \'filename.txt\'. Enter a file name after the prompt."
@@ -1313,14 +1374,17 @@ int main(int argc, char** argv)
 		<< "\n\t(UPPER CASE)W A S D: Translate back and forth along the x-axis or the z-axis"
 		<< "\n\t(UPPER CASE)Q E: Translate up and down, along the y-axis"
 		<< "\n\nControlling LIGHT 1:"
-		<< "\n\t(UPPERCASE)(Use ALT to go reverse) Z: y-axis, X: x-axis, C: z-axis"
+		<< "\n\t(UPPERCASE)(Use ALT to go reverse) , (COMMA): y-axis, . (PERIOD): x-axis, / (FORWARD SLASH): z-axis"
 		<< "\n\t[:Toggle ON/OFF LIGHT 1"
 		<< "\n\nControlling LIGHT 2:"
-		<< "\n\t(UPPERCASE)(Use ALT to go reverse) V: y-axis, B: x-axis, N: z-axis"
+		<< "\n\t(UPPERCASE)(Use ALT to go reverse) - (MINUS): y-axis, = (EQUALS): x-axis, \\ (BACK SLASH): z-axis"
 		<< "\n\t]:Toggle ON/OFF LIGHT 1"
 		<< "\n\nSwitching Materials:"
-		<< "\n\t(UPPERCASE) T: Ruby, Y:Emerald, U: Copper, I: Black Rubber, O: Jade";
+		<< "\n\t(UPPERCASE) T: Ruby, Y:Emerald, U: Copper, I: Black Rubber, O: Jade"
+		<< "\nj: Delete currently selected object"
+		<< "\nq: Quit\n";
 
+	//Stuff for glut initialization
 	glutInit(&argc, argv);		//starts up GLUT
 	
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -1330,7 +1394,7 @@ int main(int argc, char** argv)
 	glutInitWindowSize(600, 600);
 	glutInitWindowPosition(50, 50);
 
-	glutCreateWindow("Assignment 3");	//creates the window
+	glutCreateWindow("Assignment 3 (gunasepi, temelkr)");	//creates the window
 
 	glutDisplayFunc(display);	//registers "display" as the display callback function
 	glutKeyboardFunc(keyboard);
@@ -1340,9 +1404,11 @@ int main(int argc, char** argv)
 
 	initLighting();
 
+	//Enable culling on back faces
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	glutMainLoop();				//starts the event loop
-	return(0);					//return may not be necessary on all compilers
+	//Start the main loop
+	glutMainLoop();
+	return(0);
 }

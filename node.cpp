@@ -11,9 +11,11 @@
 #  include <GL/freeglut.h>
 #endif
 
-Node::Node(){	//constructor
+//Constructor for a node
+//Initially the node will be a root node, until changed
+Node::Node(){
 	ID = getID();
-	nodeType = root; //base class will be only really our root node, so lets do that
+	nodeType = root;
 	isDrawable = false;
 	children = new vector<Node*>();
 	parent = 0;
@@ -24,8 +26,8 @@ Node::Node(){	//constructor
 	//printf("node init done\n");
 }
 
-//==================================================================
-//function which does all the heavy lifting
+
+//This function will reursively draw the Nodes
 void Node::draw(){
 	//printf("nodeType: %i\n", nodeType);
 	//we entered node, so execute the commands
@@ -49,13 +51,6 @@ void Node::draw(){
 	nodeSpecificCodeUp();
 }
 
-//====================================================================
-//FUNCTION THAT DOES THE ACTUAL STUFF IN 
-//DERIVED CLASSES
-
-//TO BE OVERRIDDEN IN CHILD CLASSES AS NEEDED
-//code where we add what the node will do when moving down the tree
+//These functions are used by the inherting classes
 void Node::nodeSpecificCodeDown(){}
-
-//code where we add what the node will do when moving up the tree
 void Node::nodeSpecificCodeUp(){}

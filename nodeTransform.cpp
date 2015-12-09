@@ -14,7 +14,7 @@
 #include "Math/math3D.h"
 #include <stdio.h>
 
-//for gltranslate and gl scale
+//Constructor with a 3d vector for scale and translate
 NodeTransform::NodeTransform(transformType whatType, Vector3D vec3){
 	nodeType = transformation;
 	transformationType = whatType;
@@ -22,13 +22,14 @@ NodeTransform::NodeTransform(transformType whatType, Vector3D vec3){
 	//printf("%f %f %f\n",amount3.x,amount3.y,amount3.z);
 }
 
-//for gl rotate
+//Constructor with a 4d vector for rotate
 NodeTransform::NodeTransform(transformType whatType, Vector4D vec4){
 	nodeType = transformation;
 	transformationType = whatType;
 	amount4 = vec4;
 }
 
+//Add the commands
 void NodeTransform::nodeSpecificCodeDown(){
 	switch (transformationType){
 	case Translate:

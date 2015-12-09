@@ -10,6 +10,7 @@
 #  include <GL/freeglut.h>
 #endif
 
+//This class is used to add push and pop matrix into the code to make sure that every object is contained properly with its materials and transformations
 
 NodeGroup::NodeGroup(){
 	nodeType = group;

@@ -1,10 +1,6 @@
 #ifndef __NODE_H__	//guard against cyclic dependancy
 #define __NODE_H__
 
-//Node Class.
-//should act as a template class for other sub-types of
-//Nodes
-
 #include <vector>
 #include "structs.h"
 #include "Math/Hitbox.h"
@@ -15,10 +11,9 @@ using namespace std;
 
 extern int getID();
 
+//Main Node class
 
-
-//if you add more derived classes
-//add the types here
+//Various node types
 enum NodeType{
 	root,
 	group,
@@ -26,12 +21,14 @@ enum NodeType{
 	model
 };
 
+//Various transformation types possible for a nodes
 enum transformType{
 	Translate,
 	Rotate,
 	Scale
 };
 
+//various model types
 enum ModelType{
 	Sphere,
 	Cube,
@@ -49,7 +46,7 @@ enum ModelType{
 
 class Node{
 public:
-	Node();	//constructor
+	Node();
 
 	NodeType nodeType;
 	bool isDrawable;
@@ -62,9 +59,6 @@ public:
 	ModelType modelType;
 	Vector3D amount3;
 	Vector4D amount4;
-
-	
-
 
 	transformType transformationType;
 

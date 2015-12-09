@@ -19,6 +19,8 @@
 #include "Math/Hitbox.h"
 #include "Math/math3D.h"
 
+//Header for Model nodes
+
 class NodeModel:public Node{
 public:
 	NodeModel(ModelType whatType);	//constructor
