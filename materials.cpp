@@ -146,6 +146,11 @@ cMaterial::cMaterial()
 	current = &emerald;
 }
 
+cMaterial::cMaterial()
+{
+	//delete current;
+}
+
 
 void cMaterial::toRuby(){current = &ruby;}
 void cMaterial::toBlackRubber(){current = &blackRubber;}

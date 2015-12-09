@@ -19,6 +19,7 @@ class cMaterial
 {
 public:
 	cMaterial();
+	~cMaterial();
 	customMaterial emerald;
 	customMaterial blackRubber;
 	customMaterial jade;
