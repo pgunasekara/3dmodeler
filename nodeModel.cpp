@@ -43,10 +43,10 @@ NodeModel::NodeModel(ModelType whatType){	//constructor
 //as the node moves down through it, we want to perform down action
 //which in this case means drawing the model
 void NodeModel::nodeSpecificCodeDown(){
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, currentMat.current.ambient);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, currentMat.current.diffuse);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, currentMat.current.specular);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, currentMat.current.shine);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, currentMat.current->ambient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, currentMat.current->diffuse);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, currentMat.current->specular);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, currentMat.current->shine);
 
 	switch (modelType){
 	case Sphere:

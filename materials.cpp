@@ -1,4 +1,6 @@
 #include "materials.h"
+#include <string>
+using namespace std;
 
 cMaterial::cMaterial()
 {
@@ -13,6 +15,7 @@ cMaterial::cMaterial()
 	emerald.ambient[1] = 0.1745;
 	emerald.ambient[2] = 0.0215;
 	emerald.ambient[3] = 1.0;
+	emerald.type = "emerald";
 
 	emerald.diffuse[0] =0.0215;
 	emerald.diffuse[1] = 0.1745;
@@ -60,6 +63,7 @@ cMaterial::cMaterial()
 	blackRubber.emission[3] =0.0;
 
 	blackRubber.shine = 0.6;
+	blackRubber.type = "blackRubber";
 
 
 	jade.ambient[0] =0.135;
@@ -83,6 +87,7 @@ cMaterial::cMaterial()
 	ruby.emission[3] =0.0;
 
 	jade.shine = 0.1;
+	jade.type = "jade";
 
 	/*ruby = {
 		{0.1745,0.01175,0.01175,1.0},
@@ -113,6 +118,7 @@ cMaterial::cMaterial()
 	ruby.emission[3] =0.0;
 
 	ruby.shine = 0.6;
+	ruby.type = "ruby";
 
 
 	copper.ambient[0] =0.19125;
@@ -135,13 +141,32 @@ cMaterial::cMaterial()
 	copper.emission[2] =0.0;
 	copper.emission[3] =0.0;
 	copper.shine = 0.1;
+	copper.type = "copper";
 
-	current = emerald;
+	current = &emerald;
 }
 
 
-void cMaterial::toRuby(){current = ruby;}
-void cMaterial::toBlackRubber(){current = blackRubber;}
-void cMaterial::toJade(){current = jade;}
-void cMaterial::toEmerald(){current = emerald;}
-void cMaterial::toCopper(){current = copper;}
+void cMaterial::toRuby(){current = &ruby;}
+void cMaterial::toBlackRubber(){current = &blackRubber;}
+void cMaterial::toJade(){current = &jade;}
+void cMaterial::toEmerald(){current = &emerald;}
+void cMaterial::toCopper(){current = &copper;}
+
+void cMaterial::fromString(string arg){
+		if(arg == "ruby"){
+			current = &ruby;
+		}
+		else if(arg == "jade"){
+			current = &jade;
+		}
+		else if(arg == "copper"){
+			current = &copper;
+		}
+		else if(arg == "blackRubber"){
+			current = &blackRubber;
+		}
+		else if(arg == "emerald"){
+			current = &emerald;
+		}
+	}

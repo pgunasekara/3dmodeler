@@ -193,3 +193,16 @@ bool SceneGraph::Intersect(int x, int y){
 	return false;
 
 }
+
+void SceneGraph::clearScene(Node *n){
+	for (int i = 0; i < n->children->size(); i++){
+		clearScene(n->children->at(i));
+	}
+	n->children->clear();
+	return;
+}
+
+void SceneGraph::deleteScene(){
+	goToRoot();
+	clearScene(currentNode);
+}

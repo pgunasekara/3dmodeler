@@ -23,7 +23,8 @@ public:
 	//Scene Graph Draw
 	void draw();
 	void transformNode(Node *node);
-	void recursiveSearch();
+	void deleteScene();
+	void clearScene(Node *n);
 
 	// Variables for Intersect
 	vec3D near,far,distance;

@@ -1,17 +1,15 @@
-root: {
-	 group: {
-		 group: {
-ID: 1,
-	 transformation: {
-	 transformType: Translate
-	 vector: (0,0,0)
-	}
-	 model: {
-	 modelType: Cube
-	 lowHit: (-0.5,-0.5,-0.5)
-	 highHit: (0.5,0.5,0.5)
-	}
-	}
-	}
-	}
-	}
+group: {
+group:{
+ID:1,
+transformation:{
+transformType: Translate
+vector:(0,0,0)
+model:{
+modelType:Cube
+lowHit:(-0.5,-0.5,-0.5)
+highHit:(0.5,0.5,0.5)
+Material:emerald
+}
+}
+}
+}

@@ -119,40 +119,75 @@ string getTransformType(transformType transformationType){
 			break;
 		}
 	}
-
+/*
 void recursiveSave(Node *n){
 	if (n->nodeType == group){
-		myfile << "\t group: {\n";
+		myfile << "group:{\n";
 		// save ID
-		myfile << "ID: " << n->ID << "," << endl;
+		myfile << "ID:" << n->ID << "," << endl;
 	}else if (n->nodeType == model){
 		vertex3D min=n->hit.minP;
 		vertex3D max=n->hit.maxP;
-		myfile << "\t model: {\n";
+		myfile << "model:{\n";
 		// gives number
-		myfile << "\t modelType: "  << getModelType(n->modelType) << endl;
+		myfile << "modelType:"  << getModelType(n->modelType) << endl;
 		// put materials once pasi gets it
-		myfile << "\t lowHit: (" << min.x << "," << min.y << "," << min.z << ")" << endl;
-		myfile << "\t highHit: (" << max.x << "," << max.y << "," << max.z << ")" << endl;
-		myfile << "\t}\n";
+		myfile << "lowHit" << min.x << "," << min.y << "," << min.z << ")" << endl;
+		myfile << "highHit:(" << max.x << "," << max.y << "," << max.z << ")" << endl;
+		myfile << "Material:" << n->currentMat.current->type << endl;
 	}else if (n->nodeType == transformation){
-		myfile << "\t transformation: {\n";
+		myfile << "transformation:{\n";
 		// gives number
-		myfile << "\t transformType: "  << getTransformType(n->transformationType) << endl;
+		myfile << "transformType: "  << getTransformType(n->transformationType) << endl;
 		if (n->transformationType == Rotate){
-			myfile << "\t vector: (" << n->amount4.w << "," << n->amount4.x << "," << n->amount4.y << "," << n->amount4.z << ")" << endl;
+			myfile << "vector:(" << n->amount4.w << "," << n->amount4.x << "," << n->amount4.y << "," << n->amount4.z << ")" << endl;
 		}else {
 			//cout << "\t vector: (" << n->amount3.x << "," << n->amount3.y << "," << n->amount3.z << ")" << endl;
-			myfile << "\t vector: (" << n->amount3.x << "," << n->amount3.y << "," << n->amount3.z << ")" << endl;
+			myfile << "vector:(" << n->amount3.x << "," << n->amount3.y << "," << n->amount3.z << ")" << endl;
 		}
 		// put materials once pasi gets it
 		//myfile << 
-		myfile << "\t}\n";
 	}
 	for (int i = 0; i < n->children->size(); i++){
 		recursiveSave(n->children->at(i));
 	}
-		myfile << "\t}\n";
+		myfile << "}\n";
+	return;
+}
+*/
+
+void recursiveSave(Node *n){
+	if (n->nodeType == group){
+		myfile << "group:{\n";
+		// save ID
+		myfile << "ID:" << n->ID << "," << endl;
+	}else if (n->nodeType == model){
+		vertex3D min=n->hit.minP;
+		vertex3D max=n->hit.maxP;
+		myfile << "model:{\n";
+		// gives number
+		myfile << "modelType:"  << getModelType(n->modelType) << endl;
+		// put materials once pasi gets it
+		myfile << "lowHit" << min.x << "," << min.y << "," << min.z << ")" << endl;
+		myfile << "highHit:(" << max.x << "," << max.y << "," << max.z << ")" << endl;
+		myfile << "Material:" << n->currentMat.current->type << endl;
+	}else if (n->nodeType == transformation){
+		myfile << "transformation:{\n";
+		// gives number
+		myfile << "transformType: "  << getTransformType(n->transformationType) << endl;
+		if (n->transformationType == Rotate){
+			myfile << "vector:(" << n->amount4.w << "," << n->amount4.x << "," << n->amount4.y << "," << n->amount4.z << ")" << endl;
+		}else {
+			//cout << "\t vector: (" << n->amount3.x << "," << n->amount3.y << "," << n->amount3.z << ")" << endl;
+			myfile << "vector:(" << n->amount3.x << "," << n->amount3.y << "," << n->amount3.z << ")" << endl;
+		}
+		// put materials once pasi gets it
+		//myfile << 
+	}
+	for (int i = 0; i < n->children->size(); i++){
+		recursiveSave(n->children->at(i));
+	}
+		myfile << "}\n";
 	return;
 }
 
@@ -177,8 +212,7 @@ void saveEverything(){
 }
 void saveState(){
 	if (myfile.is_open()){
-		myfile << "root: {\n";
-		myfile << "\t group: {\n\t";
+		myfile << "group:{\n";
 		saveEverything();
 		myfile.close();
 	}else{
@@ -223,7 +257,6 @@ void drawAxis()
 	glEnd();
 }
 
-
 //function which will populate a sample graph 
 void initGraph()
 {
@@ -236,6 +269,12 @@ void initGraph()
 	//When clearing, reset masterID to 0
 	SG->insertChildNodeHere(new NodeGroup());
 	printf("\nFIRST NODE %i\n", SG->currentNode->nodeType);
+}
+
+void resetGraph(){
+	SG->deleteScene();
+	masterID = 1;
+	initGraph();
 }
 
 //callbacks
@@ -861,6 +900,9 @@ void keyboard(unsigned char key, int x, int y)
 				SG->currentNode->currentMat.toRuby();
 			}
 			break;
+		case 'r':
+			resetGraph();
+			break;
 	}
 	glutPostRedisplay();
 }
@@ -990,7 +1032,7 @@ int main(int argc, char** argv)
 	glutMouseFunc(mouse);
 	glutMotionFunc(passive);
 
-	//initLighting();
+	initLighting();
 
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);

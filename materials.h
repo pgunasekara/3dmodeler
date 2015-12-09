@@ -1,8 +1,12 @@
 #ifndef __MATERIALS_H_
 #define __MATERIALS_H_
 
+#include <string>
+using namespace std;
+
 typedef struct customMaterial
 {
+	string type;
 	float ambient[4];
 	float diffuse[4];
 	float specular[4];
@@ -21,8 +25,11 @@ public:
 	customMaterial ruby;
 	customMaterial copper;
 
-	customMaterial current;
+	customMaterial *current;
 
+	string currentString;
+
+	void fromString(string arg);
 	void toRuby();
 	void toBlackRubber();
 	void toJade();
