@@ -488,7 +488,8 @@ void keyboard(unsigned char key, int x, int y)
 			SG->insertChildNodeHere(new NodeTransform(Translate, ip));
 			
 			SG->insertChildNodeHere(new NodeModel(Cube));
-			hit = new Hitbox();
+			//hit = new Hitbox();
+			PlaneExist = true;
 			break;
 		case 'x':
 			//SPHERE
@@ -507,10 +508,8 @@ void keyboard(unsigned char key, int x, int y)
 			SG->insertChildNodeHere(new NodeModel(Sphere));
 			SG->currentNode->current = true;
 			//hit = new Hitbox();
+			PlaneExist = true;
 			break;
-
-			//hit = new Hitbox();
-			//PlaneExist = true;
 		case 'c':
 			//CONE
 			//Go to the top group node
@@ -526,7 +525,7 @@ void keyboard(unsigned char key, int x, int y)
 			SG->insertChildNodeHere(new NodeTransform(Translate, ip));
 			
 			SG->insertChildNodeHere(new NodeModel(Cone));
-			hit = new Hitbox();
+			PlaneExist = true;
 			break;
 		case 'v':
 			//CYLINDER
@@ -543,7 +542,7 @@ void keyboard(unsigned char key, int x, int y)
 			SG->insertChildNodeHere(new NodeTransform(Translate, ip));
 			
 			SG->insertChildNodeHere(new NodeModel(Cylinder));
-			hit = new Hitbox();
+			PlaneExist = true;
 			break;
 		case 'b':
 			//TORUS
@@ -560,7 +559,7 @@ void keyboard(unsigned char key, int x, int y)
 			SG->insertChildNodeHere(new NodeTransform(Translate, ip));
 			
 			SG->insertChildNodeHere(new NodeModel(Torus));
-			hit = new Hitbox();
+			PlaneExist = true;
 			break;
 		case 'm':
 			//CUBE
@@ -577,455 +576,462 @@ void keyboard(unsigned char key, int x, int y)
 			SG->insertChildNodeHere(new NodeTransform(Translate, ip));
 			
 			SG->insertChildNodeHere(new NodeModel(Tetrahedron));
-			hit = new Hitbox();
+			PlaneExist = true;
 			break;
 
 
 		//---------------TRANSLATION-------------------//
 		case 'y':
-		{
-			//Modify Transformation Node
-			//Node *tempCurrentNode = SG->currentNode;
-			
-			while(SG->currentNode->nodeType == model)
-				SG->goToParent();
+			if (PlaneExist){
+				//Modify Transformation Node
+				//Node *tempCurrentNode = SG->currentNode;
+				
+				while(SG->currentNode->nodeType == model)
+					SG->goToParent();
 
-			translation.x = 0;
+				translation.x = 0;
 
-			int mod = glutGetModifiers();
-			
-			if(mod == GLUT_ACTIVE_ALT)
-				translation.y = -0.05;
-			else
-				translation.y = 0.05;
-			
-			translation.z = 0;
+				int mod = glutGetModifiers();
+				
+				if(mod == GLUT_ACTIVE_ALT)
+					translation.y = -0.05;
+				else
+					translation.y = 0.05;
+				
+				translation.z = 0;
 
-			NodeTransform *tempNode = new NodeTransform(Translate, translation);
+				NodeTransform *tempNode = new NodeTransform(Translate, translation);
 
-			int count;
-			for(count = 0; count < SG->hitBoxNodes.size(); count++)
-			{
-				if(SG->hitBoxNodes.at(count)->current == true)
+				int count;
+				for(count = 0; count < SG->hitBoxNodes.size(); count++)
 				{
-					break;
+					if(SG->hitBoxNodes.at(count)->current == true)
+					{
+						break;
+					}
 				}
+
+				SG->hitBoxNodes.at(count)->hit.Translate(vec3D(translation.x, translation.y, translation.z));
+
+
+				//qNow we need to link nodes below it to the new node
+				for(int i = 0; i < SG->currentNode->children->size(); i++)
+				{
+					tempNode->children->push_back(SG->currentNode->children->at(i));
+					//The current node also needs to have it's old nodes removed
+				}
+
+				//The only node the currentNode should have is the the new node
+				
+				SG->currentNode->children->clear();
+
+				SG->insertChildNodeHere(new NodeGroup());
+				SG->insertChildNodeHere(tempNode);
+				//SG->currentNode = tempCurrentNode;
+
+				SG->draw();
 			}
-
-			SG->hitBoxNodes.at(count)->hit.Translate(vec3D(translation.x, translation.y, translation.z));
-
-
-			//qNow we need to link nodes below it to the new node
-			for(int i = 0; i < SG->currentNode->children->size(); i++)
-			{
-				tempNode->children->push_back(SG->currentNode->children->at(i));
-				//The current node also needs to have it's old nodes removed
-			}
-
-			//The only node the currentNode should have is the the new node
-			
-			SG->currentNode->children->clear();
-
-			SG->insertChildNodeHere(new NodeGroup());
-			SG->insertChildNodeHere(tempNode);
-			//SG->currentNode = tempCurrentNode;
-
-			SG->draw();
 			break;
-		}
-
 		case 't':
-		{
-			//Modify Transformation Node
-			while(SG->currentNode->nodeType == model)
-				SG->goToParent();
+			if (PlaneExist){
+				//Modify Transformation Node
+				while(SG->currentNode->nodeType == model)
+					SG->goToParent();
 
-			int mod = glutGetModifiers();
+				int mod = glutGetModifiers();
 
-			if(mod == GLUT_ACTIVE_ALT)
-				translation.x = -0.05;
-			else
-				translation.x = 0.05;
+				if(mod == GLUT_ACTIVE_ALT)
+					translation.x = -0.05;
+				else
+					translation.x = 0.05;
 
-			translation.y = 0;
-			translation.z = 0;
+				translation.y = 0;
+				translation.z = 0;
 
-			NodeTransform *tempNode = new NodeTransform(Translate, translation);
-			
-			int count;
-			for(count = 0; count < SG->hitBoxNodes.size(); count++)
-			{
-				if(SG->hitBoxNodes.at(count)->current == true)
+				NodeTransform *tempNode = new NodeTransform(Translate, translation);
+				
+				int count;
+				for(count = 0; count < SG->hitBoxNodes.size(); count++)
 				{
-					break;
+					if(SG->hitBoxNodes.at(count)->current == true)
+					{
+						break;
+					}
 				}
+
+				SG->hitBoxNodes.at(count)->hit.Translate(vec3D(translation.x, translation.y, translation.z));
+
+
+
+				//Now we need to link nodes below it to the new node
+				for(int i = 0; i < SG->currentNode->children->size(); i++)
+				{
+					tempNode->children->push_back(SG->currentNode->children->at(i));
+					//The current node also needs to have it's old nodes removed
+				}
+
+				//The only node the currentNode should have is the the new node
+				
+				SG->currentNode->children->clear();
+
+				SG->insertChildNodeHere(new NodeGroup());
+				SG->insertChildNodeHere(tempNode);
+				SG->draw();
+				break;
 			}
-
-			SG->hitBoxNodes.at(count)->hit.Translate(vec3D(translation.x, translation.y, translation.z));
-
-
-
-			//Now we need to link nodes below it to the new node
-			for(int i = 0; i < SG->currentNode->children->size(); i++)
-			{
-				tempNode->children->push_back(SG->currentNode->children->at(i));
-				//The current node also needs to have it's old nodes removed
-			}
-
-			//The only node the currentNode should have is the the new node
-			
-			SG->currentNode->children->clear();
-
-			SG->insertChildNodeHere(new NodeGroup());
-			SG->insertChildNodeHere(tempNode);
-			SG->draw();
-			break;
-		}
 
 		case 'u':
-		{
-			Node *tempCurrentNode;
-			//Modify Transformation Node
-			while(SG->currentNode->nodeType == model)
-				SG->goToParent();
+			if (PlaneExist){
+				Node *tempCurrentNode;
+				//Modify Transformation Node
+				while(SG->currentNode->nodeType == model)
+					SG->goToParent();
 
-			int mod = glutGetModifiers();
+				int mod = glutGetModifiers();
 
-			translation.x = 0;
-			translation.y = 0;
-			if(mod == GLUT_ACTIVE_ALT)
-			{
-				translation.z = -0.05;
-			}
-
-			else
-				translation.z = 0.05;
-
-			NodeTransform *tempNode = new NodeTransform(Translate, translation);
-			
-			
-			int count;
-			for(count = 0; count < SG->hitBoxNodes.size(); count++)
-			{
-				if(SG->hitBoxNodes.at(count)->current == true)
+				translation.x = 0;
+				translation.y = 0;
+				if(mod == GLUT_ACTIVE_ALT)
 				{
-					break;
+					translation.z = -0.05;
 				}
+
+				else
+					translation.z = 0.05;
+
+				NodeTransform *tempNode = new NodeTransform(Translate, translation);
+				
+				
+				int count;
+				for(count = 0; count < SG->hitBoxNodes.size(); count++)
+				{
+					if(SG->hitBoxNodes.at(count)->current == true)
+					{
+						break;
+					}
+				}
+
+				SG->hitBoxNodes.at(count)->hit.Translate(vec3D(translation.x, translation.y, translation.z));
+
+				//Now we need to link nodes below it to the new node
+				for(int i = 0; i < SG->currentNode->children->size(); i++)
+				{
+					tempNode->children->push_back(SG->currentNode->children->at(i));
+					//The current node also needs to have it's old nodes removed
+				}
+
+				//The only node the currentNode should have is the the new node
+				
+				SG->currentNode->children->clear();
+
+				SG->insertChildNodeHere(new NodeGroup());
+				SG->insertChildNodeHere(tempNode);
+				SG->draw();
 			}
-
-			SG->hitBoxNodes.at(count)->hit.Translate(vec3D(translation.x, translation.y, translation.z));
-
-			//Now we need to link nodes below it to the new node
-			for(int i = 0; i < SG->currentNode->children->size(); i++)
-			{
-				tempNode->children->push_back(SG->currentNode->children->at(i));
-				//The current node also needs to have it's old nodes removed
-			}
-
-			//The only node the currentNode should have is the the new node
-			
-			SG->currentNode->children->clear();
-
-			SG->insertChildNodeHere(new NodeGroup());
-			SG->insertChildNodeHere(tempNode);
-			SG->draw();
 			break;
-		}
 		//---------------TRANSLATION-------------------//
 		//------------------SCALE---------------------//
 		case 'g':
 		{
 			//Modify Transformation Node
 			//Node *tempCurrentNode = SG->currentNode;
-			
-			while(SG->currentNode->nodeType == model)
-				SG->goToParent();
+			if (PlaneExist){
+				while(SG->currentNode->nodeType == model)
+					SG->goToParent();
 
-			scale.x = 1.0;
+				scale.x = 1.0;
 
-			int mod = glutGetModifiers();
-			
-			if(mod == GLUT_ACTIVE_ALT)
-				scale.y = 0.5;
-			else
-				scale.y = 2.0;
-			
-			scale.z = 1.0;
+				int mod = glutGetModifiers();
+				
+				if(mod == GLUT_ACTIVE_ALT)
+					scale.y = 0.5;
+				else
+					scale.y = 2.0;
+				
+				scale.z = 1.0;
 
-			NodeTransform *tempNode = new NodeTransform(Scale, scale);
+				NodeTransform *tempNode = new NodeTransform(Scale, scale);
 
-			int count;
-			for(count = 0; count < SG->hitBoxNodes.size(); count++)
-			{
-				if(SG->hitBoxNodes.at(count)->current == true)
+				int count;
+				for(count = 0; count < SG->hitBoxNodes.size(); count++)
 				{
-					break;
+					if(SG->hitBoxNodes.at(count)->current == true)
+					{
+						break;
+					}
 				}
+
+				SG->hitBoxNodes.at(count)->hit.Scale(vec3D(scale.x, scale.y, scale.z));
+
+
+				//Now we need to link nodes below it to the new node
+				for(int i = 0; i < SG->currentNode->children->size(); i++)
+				{
+					tempNode->children->push_back(SG->currentNode->children->at(i));
+					//The current node also needs to have it's old nodes removed
+				}
+
+				//The only node the currentNode should have is the the new node
+				
+				SG->currentNode->children->clear();
+
+				SG->insertChildNodeHere(new NodeGroup());
+				SG->insertChildNodeHere(tempNode);
+				SG->draw();
+				//SG->currentNode = tempCurrentNode;
 			}
-
-			SG->hitBoxNodes.at(count)->hit.Scale(vec3D(scale.x, scale.y, scale.z));
-
-
-			//Now we need to link nodes below it to the new node
-			for(int i = 0; i < SG->currentNode->children->size(); i++)
-			{
-				tempNode->children->push_back(SG->currentNode->children->at(i));
-				//The current node also needs to have it's old nodes removed
-			}
-
-			//The only node the currentNode should have is the the new node
-			
-			SG->currentNode->children->clear();
-
-			SG->insertChildNodeHere(new NodeGroup());
-			SG->insertChildNodeHere(tempNode);
-			SG->draw();
-			//SG->currentNode = tempCurrentNode;
-
-			break;
 		}
+		break;
 
 		case 'h':
 		{
-			//Modify Transformation Node
-			while(SG->currentNode->nodeType == model)
-				SG->goToParent();
+			if (PlaneExist){
+				//Modify Transformation Node
+				while(SG->currentNode->nodeType == model)
+					SG->goToParent();
 
-			int mod = glutGetModifiers();
+				int mod = glutGetModifiers();
 
-			if(mod == GLUT_ACTIVE_ALT)
-				scale.x = 0.5;
-			else
-				scale.x = 2.0;
+				if(mod == GLUT_ACTIVE_ALT)
+					scale.x = 0.5;
+				else
+					scale.x = 2.0;
 
-			scale.y = 1.0;
-			scale.z = 1.0;
+				scale.y = 1.0;
+				scale.z = 1.0;
 
-			NodeTransform *tempNode = new NodeTransform(Scale, scale);
-			
-			int count;
-			for(count = 0; count < SG->hitBoxNodes.size(); count++)
-			{
-				if(SG->hitBoxNodes.at(count)->current == true)
+				NodeTransform *tempNode = new NodeTransform(Scale, scale);
+				
+				int count;
+				for(count = 0; count < SG->hitBoxNodes.size(); count++)
 				{
-					break;
+					if(SG->hitBoxNodes.at(count)->current == true)
+					{
+						break;
+					}
 				}
+
+				SG->hitBoxNodes.at(count)->hit.Scale(vec3D(scale.x, scale.y, scale.z));
+
+
+
+				//Now we need to link nodes below it to the new node
+				for(int i = 0; i < SG->currentNode->children->size(); i++)
+				{
+					tempNode->children->push_back(SG->currentNode->children->at(i));
+					//The current node also needs to have it's old nodes removed
+				}
+
+				//The only node the currentNode should have is the the new node
+				
+				SG->currentNode->children->clear();
+
+				SG->insertChildNodeHere(new NodeGroup());
+				SG->insertChildNodeHere(tempNode);
+				SG->draw();
 			}
-
-			SG->hitBoxNodes.at(count)->hit.Scale(vec3D(scale.x, scale.y, scale.z));
-
-
-
-			//Now we need to link nodes below it to the new node
-			for(int i = 0; i < SG->currentNode->children->size(); i++)
-			{
-				tempNode->children->push_back(SG->currentNode->children->at(i));
-				//The current node also needs to have it's old nodes removed
-			}
-
-			//The only node the currentNode should have is the the new node
-			
-			SG->currentNode->children->clear();
-
-			SG->insertChildNodeHere(new NodeGroup());
-			SG->insertChildNodeHere(tempNode);
-			SG->draw();
-			break;
 		}
+		break;
 
 		case 'k':
 		{
-			Node *tempCurrentNode;
-			//Modify Transformation Node
-			while(SG->currentNode->nodeType == model)
-				SG->goToParent();
+			if (PlaneExist){
+				Node *tempCurrentNode;
+				//Modify Transformation Node
+				while(SG->currentNode->nodeType == model)
+					SG->goToParent();
 
-			int mod = glutGetModifiers();
+				int mod = glutGetModifiers();
 
-			scale.x = 1.0;
-			scale.y = 1.0;
-			if(mod == GLUT_ACTIVE_ALT)
-				scale.z = 0.5;
-			else
-				scale.z = 2.0;
+				scale.x = 1.0;
+				scale.y = 1.0;
+				if(mod == GLUT_ACTIVE_ALT)
+					scale.z = 0.5;
+				else
+					scale.z = 2.0;
 
-			NodeTransform *tempNode = new NodeTransform(Scale, scale);
-			
-			int count;
-			for(count = 0; count < SG->hitBoxNodes.size(); count++)
-			{
-				if(SG->hitBoxNodes.at(count)->current == true)
+				NodeTransform *tempNode = new NodeTransform(Scale, scale);
+				
+				int count;
+				for(count = 0; count < SG->hitBoxNodes.size(); count++)
 				{
-					break;
+					if(SG->hitBoxNodes.at(count)->current == true)
+					{
+						break;
+					}
 				}
+
+				SG->hitBoxNodes.at(count)->hit.Scale(vec3D(scale.x, scale.y, scale.z));
+
+				//Now we need to link nodes below it to the new node
+				for(int i = 0; i < SG->currentNode->children->size(); i++)
+				{
+					tempNode->children->push_back(SG->currentNode->children->at(i));
+					//The current node also needs to have it's old nodes removed
+				}
+
+				//The only node the currentNode should have is the the new node
+				
+				SG->currentNode->children->clear();
+
+				SG->insertChildNodeHere(new NodeGroup());
+				SG->insertChildNodeHere(tempNode);
+				SG->draw();
 			}
-
-			SG->hitBoxNodes.at(count)->hit.Scale(vec3D(scale.x, scale.y, scale.z));
-
-			//Now we need to link nodes below it to the new node
-			for(int i = 0; i < SG->currentNode->children->size(); i++)
-			{
-				tempNode->children->push_back(SG->currentNode->children->at(i));
-				//The current node also needs to have it's old nodes removed
-			}
-
-			//The only node the currentNode should have is the the new node
-			
-			SG->currentNode->children->clear();
-
-			SG->insertChildNodeHere(new NodeGroup());
-			SG->insertChildNodeHere(tempNode);
-			SG->draw();
-			break;
 		}
+		break;
 		//------------------SCALE---------------------//
 		//-----------------ROTATE---------------------//
 		case 'i':
 		{
 			//Modify Transformation Node
 			//Node *tempCurrentNode = SG->currentNode;
-			
-			while(SG->currentNode->nodeType == model)
-				SG->goToParent();
+			if (PlaneExist){
+				while(SG->currentNode->nodeType == model)
+					SG->goToParent();
 
-			int mod = glutGetModifiers();
-			
-			if(mod == GLUT_ACTIVE_ALT)
-				rotation.w = 1.0;
-			else
-				rotation.w = -1.0;
-			
-			rotation.x = 1.0;
-			rotation.y = 0.0;
-			rotation.z = 0.0;
+				int mod = glutGetModifiers();
+				
+				if(mod == GLUT_ACTIVE_ALT)
+					rotation.w = 1.0;
+				else
+					rotation.w = -1.0;
+				
+				rotation.x = 1.0;
+				rotation.y = 0.0;
+				rotation.z = 0.0;
 
-			NodeTransform *tempNode = new NodeTransform(Rotate, rotation);
+				NodeTransform *tempNode = new NodeTransform(Rotate, rotation);
 
-			int count;
-			for(count = 0; count < SG->hitBoxNodes.size(); count++)
-			{
-				if(SG->hitBoxNodes.at(count)->current == true)
+				int count;
+				for(count = 0; count < SG->hitBoxNodes.size(); count++)
 				{
-					break;
+					if(SG->hitBoxNodes.at(count)->current == true)
+					{
+						break;
+					}
 				}
+
+				SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
+
+
+				//Now we need to link nodes below it to the new node
+				for(int i = 0; i < SG->currentNode->children->size(); i++)
+				{
+					tempNode->children->push_back(SG->currentNode->children->at(i));
+					//The current node also needs to have it's old nodes removed
+				}
+
+				//The only node the currentNode should have is the the new node
+				
+				SG->currentNode->children->clear();
+
+				SG->insertChildNodeHere(new NodeGroup());
+				SG->insertChildNodeHere(tempNode);
+				SG->draw();
+				//SG->currentNode = tempCurrentNode;
 			}
-
-			SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
-
-
-			//Now we need to link nodes below it to the new node
-			for(int i = 0; i < SG->currentNode->children->size(); i++)
-			{
-				tempNode->children->push_back(SG->currentNode->children->at(i));
-				//The current node also needs to have it's old nodes removed
-			}
-
-			//The only node the currentNode should have is the the new node
-			
-			SG->currentNode->children->clear();
-
-			SG->insertChildNodeHere(new NodeGroup());
-			SG->insertChildNodeHere(tempNode);
-			SG->draw();
-			//SG->currentNode = tempCurrentNode;
-
 			break;
 		}
 
 		case 'o':
 		{
 			//Modify Transformation Node
-			while(SG->currentNode->nodeType == model)
-				SG->goToParent();
+			if (PlaneExist){
+				while(SG->currentNode->nodeType == model)
+					SG->goToParent();
 
-			int mod = glutGetModifiers();
+				int mod = glutGetModifiers();
 
-			if(mod == GLUT_ACTIVE_ALT)
-				rotation.w = 1.0;
-			else
-				rotation.w = -1.0;
-			
-			rotation.x = 0.0;
-			rotation.y = 1.0;
-			rotation.z = 0.0;
+				if(mod == GLUT_ACTIVE_ALT)
+					rotation.w = 1.0;
+				else
+					rotation.w = -1.0;
+				
+				rotation.x = 0.0;
+				rotation.y = 1.0;
+				rotation.z = 0.0;
 
-			NodeTransform *tempNode = new NodeTransform(Rotate, rotation);
-			
-			int count;
-			for(count = 0; count < SG->hitBoxNodes.size(); count++)
-			{
-				if(SG->hitBoxNodes.at(count)->current == true)
+				NodeTransform *tempNode = new NodeTransform(Rotate, rotation);
+				
+				int count;
+				for(count = 0; count < SG->hitBoxNodes.size(); count++)
 				{
-					break;
+					if(SG->hitBoxNodes.at(count)->current == true)
+					{
+						break;
+					}
 				}
+
+				SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
+
+
+
+				//Now we need to link nodes below it to the new node
+				for(int i = 0; i < SG->currentNode->children->size(); i++)
+				{
+					tempNode->children->push_back(SG->currentNode->children->at(i));
+					//The current node also needs to have it's old nodes removed
+				}
+
+				//The only node the currentNode should have is the the new node
+				
+				SG->currentNode->children->clear();
+
+				SG->insertChildNodeHere(new NodeGroup());
+				SG->insertChildNodeHere(tempNode);
+				SG->draw();
 			}
-
-			SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
-
-
-
-			//Now we need to link nodes below it to the new node
-			for(int i = 0; i < SG->currentNode->children->size(); i++)
-			{
-				tempNode->children->push_back(SG->currentNode->children->at(i));
-				//The current node also needs to have it's old nodes removed
-			}
-
-			//The only node the currentNode should have is the the new node
-			
-			SG->currentNode->children->clear();
-
-			SG->insertChildNodeHere(new NodeGroup());
-			SG->insertChildNodeHere(tempNode);
-			SG->draw();
 			break;
 		}
 
 		case 'p':
 		{
-			Node *tempCurrentNode;
-			//Modify Transformation Node
-			while(SG->currentNode->nodeType == model)
-				SG->goToParent();
+			if (PlaneExist){
+				Node *tempCurrentNode;
+				//Modify Transformation Node
+				while(SG->currentNode->nodeType == model)
+					SG->goToParent();
 
-			int mod = glutGetModifiers();
+				int mod = glutGetModifiers();
 
-			if(mod == GLUT_ACTIVE_ALT)
-				rotation.w = 1.0;
-			else
-				rotation.w = -1.0;
-			
-			rotation.x = 0.0;
-			rotation.y = 0.0;
-			rotation.z = 1.0;
+				if(mod == GLUT_ACTIVE_ALT)
+					rotation.w = 1.0;
+				else
+					rotation.w = -1.0;
+				
+				rotation.x = 0.0;
+				rotation.y = 0.0;
+				rotation.z = 1.0;
 
-			NodeTransform *tempNode = new NodeTransform(Rotate, rotation);
-			
-			int count;
-			for(count = 0; count < SG->hitBoxNodes.size(); count++)
-			{
-				if(SG->hitBoxNodes.at(count)->current == true)
+				NodeTransform *tempNode = new NodeTransform(Rotate, rotation);
+				
+				int count;
+				for(count = 0; count < SG->hitBoxNodes.size(); count++)
 				{
-					break;
+					if(SG->hitBoxNodes.at(count)->current == true)
+					{
+						break;
+					}
 				}
+
+				SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
+
+				//Now we need to link nodes below it to the new node
+				for(int i = 0; i < SG->currentNode->children->size(); i++)
+				{
+					tempNode->children->push_back(SG->currentNode->children->at(i));
+					//The current node also needs to have it's old nodes removed
+				}
+
+				//The only node the currentNode should have is the the new node
+				
+				SG->currentNode->children->clear();
+
+				SG->insertChildNodeHere(new NodeGroup());
+				SG->insertChildNodeHere(tempNode);
+				SG->draw();
 			}
-
-			SG->hitBoxNodes.at(count)->hit.Rotate(quaternion(rotation.w,rotation.x, rotation.y, rotation.z));
-
-			//Now we need to link nodes below it to the new node
-			for(int i = 0; i < SG->currentNode->children->size(); i++)
-			{
-				tempNode->children->push_back(SG->currentNode->children->at(i));
-				//The current node also needs to have it's old nodes removed
-			}
-
-			//The only node the currentNode should have is the the new node
-			
-			SG->currentNode->children->clear();
-
-			SG->insertChildNodeHere(new NodeGroup());
-			SG->insertChildNodeHere(tempNode);
-			SG->draw();
 			break;
 		}
 		//------------------SCALE---------------------//
@@ -1034,11 +1040,12 @@ void keyboard(unsigned char key, int x, int y)
 		case 'j':
 			//delete the current Node
 			//TODO, FIRST select the node to delete!
-
+			if (PlaneExist){
 			//Make sure that the node being deleted is a NodeModel
-			if(SG->currentNode->nodeType == model)
-			{
-				SG->deleteThisNode();
+				if(SG->currentNode->nodeType == model)
+				{
+					SG->deleteThisNode();
+				}
 			}
 			break;
 		case 's':
@@ -1052,9 +1059,11 @@ void keyboard(unsigned char key, int x, int y)
 
 		//CHANGE THE MATERIAL
 		case '[':
-			if(SG->currentNode->nodeType == model)
-			{
-				SG->currentNode->currentMat.toRuby();
+			if (PlaneExist){
+				if(SG->currentNode->nodeType == model)
+				{
+					SG->currentNode->currentMat.toRuby();
+				}
 			}
 			break;
 		case 'r':
