@@ -16,17 +16,17 @@ make clean
 ```
 
 ### Known Issues:
-*Sometimes deleting an object may not automatically select a deselected node.
-*When Changing materials, you cannot change the material of the first node without first changing the material of the second node added. I'm not entirely sure why this happens. Changing materials works perfectly fine after you change any other node before the first one.
+* Sometimes deleting an object may not automatically select a deselected node.
+* When Changing materials, you cannot change the material of the first node without first changing the material of the second node added. I'm not entirely sure why this happens. Changing materials works perfectly fine after you change any other node before the first one.
 
 ### Extra Notes:
-*Sometimes on Linux or OSX the main file object generation may not work. For Linux, it's because the c++11 flag is not included for some reason. If so, run the following commands instead:
+* Sometimes on Linux or OSX the main file object generation may not work. For Linux, it's because the c++11 flag is not included for some reason. If so, run the following commands instead:
 ```
 g++ -std=c++11 -c -o main.o main.cpp
 make
 ```
 
-*If on OSX, and you get an error about incorrect architecture, run the following commands instead:
+* If you recieve an error about incorrect architecture on OSX, run the following commands instead:
 ```
 g++ -std=c++11 -arch x86_64  -c -o main.o main.cpp
 make
