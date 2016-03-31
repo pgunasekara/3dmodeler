@@ -20,8 +20,21 @@ endif
 PROGRAM_NAME=assignment_3_gunasepi_temelkr
 
 #run target to compile and build, and then launch the executable
-run: $(PROGRAM_NAME)
+run: object $(PROGRAM_NAME)
 	./$(PROGRAM_NAME)$(EXEEXT)
+
+object: main.cpp node.cpp nodeGroup.cpp nodeModel.cpp nodeTransform.cpp sceneGraph.cpp Math/math3D.cpp Math/camera.cpp Math/Hitbox.cpp materials.cpp
+	$(CC) -std=c++11 -c -o main.o main.cpp
+	$(CC) -std=c++11 -c -o node.o node.cpp 
+	$(CC) -std=c++11 -c -o nodeGroup.o nodeGroup.cpp 
+	$(CC) -std=c++11 -c -o nodeModel.o nodeModel.cpp 
+	$(CC) -std=c++11 -c -o nodeTransform.o nodeTransform.cpp 
+	$(CC) -std=c++11 -c -o sceneGraph.o sceneGraph.cpp 
+	$(CC) -std=c++11 -c -o Math/math3D.o Math/math3D.cpp 
+	$(CC) -std=c++11 -c -o Math/camera.o Math/camera.cpp 
+	$(CC) -std=c++11 -c -o Math/Hitbox.o Math/Hitbox.cpp 
+	$(CC) -std=c++11 -c -o materials.o materials.cpp
+
 
 $(PROGRAM_NAME): main.o node.o nodeGroup.o nodeModel.o nodeTransform.o sceneGraph.o Math/math3D.o Math/camera.o Math/Hitbox.o materials.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
