@@ -1,7 +1,9 @@
-## Simple 3D Modeling Software 
+## OpenGL 3D Modeling Software
 #####COMP SCI 3GC3 - COMPUTER GRAPHICS : Assignment 3
 
 Group: Pasindu Gunasekara, Roberto Temelkovski
+
+Implements a scene graph data structure to add various 3D objects and transformations.
 
 ### Compilation Instructions
 OpenGL, FreeGLUT 3, g++, and the make utility are required to be installed for the makefile to properly compile.
